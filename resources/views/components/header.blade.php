@@ -12,7 +12,7 @@
         <nav class="s-header__nav">
             <ul>
                 <li class="current"><a href="#intro" class="smoothscroll">Home</a></li>
-                <li><a href="#about" class="smoothscroll">Recycling Centers</a></li>
+                <li><a  href="{{ route('CentreRecyclage.categorie') }}" >Recycling Centers</a></li>
                 <li><a href="#pricing" class="smoothscroll">Recyclable Materials</a></li>
                 <li><a href="#download" class="smoothscroll">Contact Us</a></li>
             </ul>
