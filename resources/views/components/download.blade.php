@@ -1,10 +1,10 @@
 <section id="download" class="s-download target-section">
     <div class="row s-download__header">
         <div class="column lg-12">
-            <h2 class="text-display-1">Join Thousands in Building a Greener Future!</h2>
+            <h2 class="text-display-1">Rejoignez des milliers de personnes pour construire un avenir plus vert !</h2>
             <p class="lead">
-                Learn how our app helps you find nearby recycling centers and understand what materials you can recycle.
-                Together, we can make a positive impact on the environment!
+                Découvrez comment notre application vous aide à trouver des centres de recyclage à proximité et à comprendre quels matériaux vous pouvez recycler.
+                Ensemble, nous pouvons avoir un impact positif sur l'environnement !
             </p>
         </div>
     </div>
