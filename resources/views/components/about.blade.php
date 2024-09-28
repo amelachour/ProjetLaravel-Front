@@ -1,43 +1,40 @@
 <section id="about" class="s-about target-section">
 
-
-    <!-- stats -->
+    <!-- statistiques -->
     <div class="row block-lg-one-fourth block-tab-one-half block-stack s-about__stats">
 
         <div class="column s-about__stats-item">
             <div class="s-about__stats-count">1.2<span>M</span></div>
-            <h5>Total Recycled Waste</h5>
+            <h5>Déchets Recyclés au Total</h5>
         </div>
         <div class="column s-about__stats-item">
             <div class="s-about__stats-count">300<span>K</span></div>
-            <h5>Registered Users</h5>
+            <h5>Utilisateurs Enregistrés</h5>
         </div>
         <div class="column s-about__stats-item">
             <div class="s-about__stats-count">85<span>%</span></div>
-            <h5>Positive Impact Rate</h5>
+            <h5>Taux d'Impact Positif</h5>
         </div>
         <div class="column s-about__stats-item">
             <div class="s-about__stats-count">150<span>+</span></div>
-            <h5>Recycling Centers</h5>
+            <h5>Centres de Recyclage</h5>
         </div>
 
-    </div> <!-- end stats -->
+    </div> <!-- fin des statistiques -->
 
-
-    <!-- intro info -->
+    <!-- info d'introduction -->
     <div class="s-about__info">
 
         <div class="row section-header" data-num="01">
             <div class="column lg-6 stack-on-1000 title-block">
-                <h2 class="title text-display-1">Join Our Recycling Revolution.</h2>
+                <h2 class="title text-display-1">Rejoignez notre Révolution du Recyclage.</h2>
             </div>
             <div class="column lg-6 stack-on-1000 desc-block">
                 <p class="desc lead">
-                    Reduce, reuse, and recycle effortlessly with our waste management platform.
-                    Track your recycling efforts, discover nearby recycling centers, and contribute to a cleaner
-                    planet.
+                    Réduisez, réutilisez et recyclez sans effort avec notre plateforme de gestion des déchets.
+                    Suivez vos efforts de recyclage, découvrez les centres de recyclage à proximité et contribuez à un
+                    planète plus propre.
                 </p>
-
             </div>
         </div>
 
@@ -48,53 +45,51 @@
                     <div class="swiper-wrapper">
 
                         <div class="s-about__info-slide swiper-slide">
-                            <h4 class="h5">Eco-Friendly.</h4>
+                            <h4 class="h5">Écologique.</h4>
                             <p>
-                                Our platform encourages responsible waste disposal, helping communities reduce
-                                their environmental footprint through recycling initiatives.
+                                Notre plateforme encourage l'élimination responsable des déchets, aidant les communautés à réduire
+                                leur empreinte environnementale grâce à des initiatives de recyclage.
                             </p>
                         </div>
                         <div class="s-about__info-slide swiper-slide">
-                            <h4 class="h5">Easy to Use.</h4>
+                            <h4 class="h5">Facile à Utiliser.</h4>
                             <p>
-                                Locate recycling centers, track your recycling activity, and stay informed on
-                                waste management tips with just a few clicks.
+                                Localisez les centres de recyclage, suivez votre activité de recyclage et restez informé sur
+                                les conseils de gestion des déchets en quelques clics.
                             </p>
                         </div>
                         <div class="s-about__info-slide swiper-slide">
-                            <h4 class="h5">Community Impact.</h4>
+                            <h4 class="h5">Impact Communautaire.</h4>
                             <p>
-                                Join a network of environmentally conscious individuals and organizations
-                                working together to reduce waste and promote sustainability.
+                                Rejoignez un réseau d'individus et d'organisations soucieux de l'environnement
+                                travaillant ensemble pour réduire les déchets et promouvoir la durabilité.
                             </p>
                         </div>
                         <div class="s-about__info-slide swiper-slide">
-                            <h4 class="h5">Secure & Reliable.</h4>
+                            <h4 class="h5">Sûr et Fiable.</h4>
                             <p>
-                                Your data is securely stored, ensuring that your personal information and
-                                environmental contributions are protected.
+                                Vos données sont stockées en toute sécurité, garantissant que vos informations personnelles et
+                                vos contributions environnementales sont protégées.
                             </p>
                         </div>
-
 
                     </div> <!-- swiper-wrapper -->
 
                     <div class="swiper-pagination"></div>
 
-                </div> <!-- end swiper-container -->
+                </div> <!-- fin swiper-container -->
 
             </div>
-        </div> <!-- end s-about__info-slider-block -->
+        </div> <!-- fin s-about__info-slider-block -->
 
-    </div> <!-- end s-about__info -->
+    </div> <!-- fin s-about__info -->
 
-
-    <!-- how-to -->
+    <!-- comment ça fonctionne -->
     <div class="s-about__howto">
 
         <div class="row section-header" data-num="02">
             <div class="column lg-12 title-block">
-                <h2 class="title text-display-1">How the site Works.</h2>
+                <h2 class="title text-display-1">Comment le site Fonctionne.</h2>
             </div>
         </div>
 
@@ -104,35 +99,35 @@
 
                 <div class="s-about__howto-process">
                     <div class="s-about__howto-process-step">
-                        <h3 class="h5">Sign Up</h3>
+                        <h3 class="h5">Inscrivez-vous</h3>
                         <p>
-                            Create an account to start tracking your waste management activities and accessing
-                            recycling centers nearby.
+                            Créez un compte pour commencer à suivre vos activités de gestion des déchets et accéder
+                            aux centres de recyclage à proximité.
                         </p>
                     </div>
                     <div class="s-about__howto-process-step">
-                        <h3 class="h5">Locate Centers</h3>
+                        <h3 class="h5">Localisez les Centres</h3>
                         <p>
-                            Use our map to find certified recycling centers and waste management facilities in
-                            your area.
+                            Utilisez notre carte pour trouver des centres de recyclage certifiés et des installations de gestion
+                            des déchets dans votre région.
                         </p>
                     </div>
                     <div class="s-about__howto-process-step">
-                        <h3 class="h5">Track Recycling</h3>
+                        <h3 class="h5">Suivez le Recyclage</h3>
                         <p>
-                            Record the materials you've recycled and see the positive impact you're making on
-                            the environment.
+                            Enregistrez les matériaux que vous avez recyclés et voyez l'impact positif que vous
+                            avez sur l'environnement.
                         </p>
                     </div>
                     <div class="s-about__howto-process-step">
-                        <h3 class="h5">Make a Difference</h3>
+                        <h3 class="h5">Faites la Différence</h3>
                         <p>
-                            Join a global community contributing to a cleaner, greener planet by reducing waste
-                            and promoting recycling.
+                            Rejoignez une communauté mondiale contribuant à une planète plus propre et plus verte en réduisant les déchets
+                            et en promouvant le recyclage.
                         </p>
                     </div>
 
-                </div> <!-- end how-to process -->
+                </div> <!-- fin du processus comment faire -->
 
             </div>
 
@@ -149,7 +144,6 @@
 
         </div>
 
-    </div> <!-- end how-to -->
-
+    </div> <!-- fin comment ça fonctionne -->
 
 </section>

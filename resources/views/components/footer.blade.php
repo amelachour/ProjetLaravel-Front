@@ -3,17 +3,17 @@
     <div class="row s-footer__top">
         <div class="column lg-12 text-center">
             <h2 class="text-display-1">
-                Sign Up for Our Newsletter.
+            Inscrivez-vous à notre newsletter.
             </h2>
             <p class="lead">
-                Stay updated on recycling tips, new features, and special offers.
+            Restez informé des conseils de recyclage, des nouvelles fonctionnalités et des offres spéciales.
             </p>
         </div>
         <div class="column lg-12 s-footer__subscribe">
             <div class="subscribe-form">
                 <form id="mc-form" class="mc-form">
-                    <input type="email" name="EMAIL" id="mce-EMAIL" class="u-fullwidth text-center" placeholder="Your Email Address" title="The domain portion of the email address is invalid (the portion after the @)." pattern="^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$" required>
-                    <input type="submit" name="subscribe" value="Subscribe" class="btn btn--primary u-fullwidth">
+                    <input type="email" name="EMAIL" id="mce-EMAIL" class="u-fullwidth text-center" placeholder="Votre Adresse E-mail" title="The domain portion of the email address is invalid (the portion after the @)." pattern="^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$" required>
+                    <input type="submit" name="subscribe" value="Inscrivez-Vous" class="btn btn--primary u-fullwidth">
                     <!-- <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_cdb7b577e41181934ed6a6a44_9a91cfe7b3" tabindex="-1" value=""></div> -->
                     <div class="mc-status"></div>
                 </form>
@@ -25,13 +25,13 @@
         <div class="column lg-5 md-6 stack-on-900">
             <div class="footer__logo">
                 <a href="index.html">
-                    <img src="images/logo.png" alt="Homepage">
+                <img src="{{ asset('images/logo.png') }}" alt="Homepage">
                 </a>
             </div>
 
             <p>
-                Join us in promoting sustainable living by making recycling a daily habit.
-                Every small action helps protect our planet!
+            Rejoignez-nous pour promouvoir un mode de vie durable en faisant du recyclage une habitude quotidienne. 
+            Chaque petite action contribue à protéger notre planète !
             </p>
 
             <ul class="s-footer__social">
@@ -66,7 +66,7 @@
             </ul>
 
             <p class="s-footer__contact">
-                Do you have a question? Send us a word: <br>
+            Avez-vous une question ? Envoyez-nous un message : <br>
                 <a href="mailto:#0" class="s-footer__mail-link"><h3 class="h6">Contact</h3>
                     <p>
                         info@greenplanet.com <br>
@@ -76,7 +76,7 @@
             </p>
 
             <div class="ss-copyright">
-                <span>© Recyclab 2021</span>
+                <span>© Recyclab 2024</span>
                 <span>                &copy; Green Planet. All rights reserved.
                         /a></span>
             </div>
