@@ -18,6 +18,7 @@
             
             <a class="s-header__menu-toggle" href="#0"><span>Menu</span></a>
         </div>
+
         <div class="s-header__cta">
             @if(auth()->check())
                 

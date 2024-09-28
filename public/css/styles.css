@@ -422,12 +422,7 @@ select {
     text-transform : none;
 }
 
-button,
-[type="button"],
-[type="reset"],
-[type="submit"] {
-    -webkit-appearance : button;
-}
+
 
 button::-moz-focus-inner,
 [type="button"]::-moz-focus-inner,
@@ -476,10 +471,6 @@ textarea {
     height : auto;
 }
 
-[type="search"] {
-    -webkit-appearance : textfield;
-    outline-offset     : -2px;
-}
 
 [type="search"]::-webkit-search-decoration {
     -webkit-appearance : none;
@@ -4716,5 +4707,153 @@ img.u-pull-left {
     .ss-go-top a {
         height : var(--vspace-1_5);
         width  : var(--vspace-1_5);
+    }
+}
+
+
+
+/*---------------------------------------------*/
+/*------------------Card Categories Centre---------------------------*/
+/* Center the main title */
+.title-center {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #2e3a47;
+    width: 100%;
+}
+
+/* Container for the cards */
+.category-cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px; /* Augmenter l'écart entre les cartes */
+    padding: 20px;
+    justify-items: center;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* Individual card */
+.category-card {
+    background-color: #4caf50; /* Changer la couleur de fond */
+    border-radius: 12px; /* Bords arrondis plus marqués */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Ombre plus profonde */
+    max-width: 300px; /* Largeur maximale augmentée */
+    width: 100%;
+    padding: 30px; /* Plus de rembourrage */
+    text-align: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease; /* Transition plus douce */
+    position: relative; /* Pour ajouter un effet de survol */
+}
+
+/* Card hover effect */
+.category-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Ombre plus marquée au survol */
+}
+
+/* Align icon and text on the same line */
+.category-card-header h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px; /* Taille de police augmentée */
+    font-weight: bold;
+    color: #042f1d; /* Texte blanc pour un meilleur contraste */
+    transition: color 0.3s ease; /* Transition de couleur au survol */
+}
+
+/* Change font color on hover */
+.category-card:hover h2 {
+    color: #4db450; /* Changer la couleur du texte au survol */
+}
+
+/* Icon style */
+.category-card-header .category-icon {
+    font-size: 50px; /* Taille d'icône augmentée */
+    color: #1fb006; /* Couleur de l'icône blanche */
+    margin-right: 10px;
+}
+
+/* Responsive layout: adjust to 2 columns on smaller screens */
+@media (max-width: 992px) {
+    .category-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px; /* Augmenter l'écart entre les cartes */
+    }
+}
+
+/* Further adjust for very small screens, 1 column */
+@media (max-width: 576px) {
+    .category-cards-container {
+        grid-template-columns: 1fr;
+        gap: 20px; /* Espacement entre les cartes */
+    }
+}
+
+
+.add-category-link {
+    display: inline-block; /* Ensure proper alignment */
+    vertical-align: middle; /* Align with the title */
+}
+
+
+/*------------------------Centre-----------------*/
+/* Card container */
+.category-cards-containerr {
+  
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 20px;
+    padding: 20px;
+    justify-items: center;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* Individual card */
+.category-card {
+    background-color: #f8f9fa; /* Light background for better contrast */
+    border: 1px solid #d1d1d1; /* Border for separation */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Card hover effect */
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Card header */
+.category-card-header {
+    text-align: center; /* Center text */
+}
+
+/* Icon styles */
+.category-card-body p {
+    margin: 5px 0; /* Spacing for paragraphs */
+    display: flex;
+    align-items: center; /* Align icon and text */
+}
+
+.category-card-body i {
+    margin-right: 10px; /* Space between icon and text */
+    color: #70a67c; /* Icon color */
+}
+
+/* Responsive text */
+.title-center {
+    font-size: 2em; /* Adjust size for larger screens */
+}
+
+/* Further adjustments for mobile */
+@media (max-width: 576px) {
+    .title-center {
+        font-size: 1.5em; /* Smaller font for mobile */
     }
 }
