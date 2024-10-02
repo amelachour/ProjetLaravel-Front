@@ -16,12 +16,32 @@ class CommentController extends Controller
         ]);
 
         // Create a new comment
-        Comment::create([
+        $comment = Comment::create([
             'post_id' => $post->id,
             'user_id' => auth()->id(),
             'comment' => $request->comment,
         ]);
 
-        return back()->with('success', 'Comment posted successfully!');
+        // Return a JSON response for AJAX
+        return response()->json([
+            'user' => auth()->user()->name,
+            'comment' => $comment->comment,
+            'created_at' => $comment->created_at->diffForHumans()
+        ]);
     }
+
+    public function destroy(Comment $comment)
+    {
+        // Ensure the user is authorized to delete the comment
+        if ($comment->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Delete the comment
+        $comment->delete();
+
+        // Return a JSON response
+        return response()->json(['message' => 'Comment deleted successfully']);
+    }
+
 }

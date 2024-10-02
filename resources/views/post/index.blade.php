@@ -277,6 +277,7 @@
                 </div>
 
                 <!-- Comments Modal -->
+                <!-- Comments Modal -->
                 <div class="modal fade" id="commentsModal-{{ $post->id }}" tabindex="-1" aria-labelledby="commentsModalLabel-{{ $post->id }}" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -286,11 +287,11 @@
                             </div>
                             <div class="modal-body">
                                 <!-- Comment form -->
-                                <form action="{{ route('comments.store', $post->id) }}" method="POST" class="mb-4">
+                                <form id="commentForm-{{ $post->id }}" method="POST">
                                     @csrf
                                     <div class="mb-3">
                                         <label for="commentBody" class="form-label">Votre commentaire</label>
-                                        <textarea class="form-control" name="comment" id="commentBody" rows="3" required></textarea>
+                                        <textarea class="form-control" name="comment" id="commentBody-{{ $post->id }}" rows="3" required></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-success">Post Comment</button>
                                 </form>
@@ -298,14 +299,13 @@
                                 <!-- Display existing comments -->
                                 <!-- Display existing comments -->
                                 <h6>Commentaires</h6>
-                                <ul class="list-group">
+                                <ul class="list-group comment-list" id="commentList-{{ $post->id }}">
                                     @foreach($post->comments as $comment)
-                                        <li class="list-group-item">
+                                        <li class="list-group-item" id="comment-{{ $comment->id }}">
                                             <strong>{{ $comment->user->name }}</strong>
                                             <div class="comment-content">{{ $comment->comment }}</div>
                                             <div class="comment-actions">
-                                                <a href="#">Like</a>
-                                                <a href="#">Delete</a>
+                                                <a href="#" class="delete-comment" data-id="{{ $comment->id }}">Delete</a>
                                                 <span class="comment-time">{{ $comment->created_at->diffForHumans() }}</span>
                                             </div>
                                         </li>
@@ -316,6 +316,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- End of Comments Modal -->
             </div>
         @endforeach
@@ -363,6 +364,71 @@
             }
         });
     });
+</script>
+<script>
+    $(document).ready(function() {
+        // For each post, bind the form submit event for real-time comments
+        @foreach($posts as $post)
+        $('#commentForm-{{ $post->id }}').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submit behavior
+
+            var formData = {
+                comment: $('#commentBody-{{ $post->id }}').val(),
+                _token: $('input[name=_token]').val() // CSRF Token
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route("comments.store", $post->id) }}', // Post the comment to this post's comment route
+                data: formData,
+                success: function(response) {
+                    // Add the new comment to the list without refreshing
+                    $('#commentList-{{ $post->id }}').prepend(`
+                    <li class="list-group-item" id="comment-${response.comment_id}">
+                        <strong>${response.user}</strong>
+                        <div class="comment-content">${response.comment}</div>
+                        <div class="comment-actions">
+                            <a href="#" class="delete-comment" data-id="${response.comment_id}">Delete</a>
+                            <span class="comment-time">Just now</span>
+                        </div>
+                    </li>
+                `);
+
+                    // Clear the textarea
+                    $('#commentBody-{{ $post->id }}').val('');
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert('There was an error posting your comment.');
+                }
+            });
+        });
+
+        // Delete Comment with AJAX
+        $(document).on('click', '.delete-comment', function(e) {
+            e.preventDefault();
+            var commentId = $(this).data('id'); // Get the comment ID
+
+            $.ajax({
+                type: 'DELETE',
+                url: '/comments/' + commentId, // Your delete route
+                data: {
+                    _token: $('input[name=_token]').val() // CSRF Token
+                },
+                success: function(response) {
+                    // Remove the comment from the DOM
+                    $('#comment-' + commentId).remove();
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert('There was an error deleting your comment.');
+                }
+            });
+        });
+        @endforeach
+    });
+
+
 </script>
 </body>
 </html>
