@@ -14,6 +14,8 @@
         body {
             background-color: #f9f9f9;
         }
+
+        /* Post Card Styling */
         .post-card {
             background-color: #fff;
             border-radius: 10px;
@@ -22,40 +24,54 @@
             margin-bottom: 20px;
             border-left: 5px solid #28a745;
         }
+
+        /* Media Styling */
         .post-media {
             border-radius: 10px;
             max-width: 100%;
             height: auto;
         }
+
+        /* Post Header */
         .post-header {
             display: flex;
             align-items: center;
             margin-top: 15px;
         }
+
         .post-header img {
             border-radius: 50%;
             width: 40px;
             height: 40px;
             margin-right: 10px;
         }
+
         .post-header .username {
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 0;
         }
+
         .post-header small {
             color: gray;
         }
+
+        /* Comments Button */
         .comments-btn {
             background-color: #28a745;
             color: white;
             border-radius: 50px;
             padding: 5px 15px;
             text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
         }
+
         .comments-btn:hover {
             background-color: #218838;
         }
+
+        /* New Post Button */
         .btn-new-post {
             background-color: #28a745;
             color: white;
@@ -63,19 +79,119 @@
             padding: 10px 20px;
             margin-bottom: 20px;
         }
+
+        /* Post Footer */
         .post-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 15px;
         }
+
         .post-actions {
             display: flex;
             align-items: center;
         }
+
         .post-actions i {
             margin-right: 5px;
         }
+
+        /* Comments Modal Styling */
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .modal-body h6 {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Comment Form */
+        .modal-body form .form-control {
+            resize: none;
+            border-radius: 8px;
+        }
+
+        .modal-body form .btn {
+            background-color: #28a745;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            padding: 8px 16px;
+        }
+
+        .modal-body form .btn:hover {
+            background-color: #218838;
+        }
+
+        /* Comment List */
+        .list-group-item {
+            background-color: #f1f1f1;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .list-group-item strong {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Comment Content */
+        .comment-content {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* Comment Actions */
+        .comment-actions {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: gray;
+        }
+
+        .comment-actions a {
+            text-decoration: none;
+            color: #28a745;
+            margin-right: 10px;
+        }
+
+        .comment-actions a:hover {
+            text-decoration: underline;
+        }
+
+        /* Comment Time */
+        .comment-time {
+            font-size: 12px;
+            color: gray;
+        }
+
+        /* Comment Like and Delete Hover Effects */
+        .comment-actions a:hover {
+            color: #218838;
+            text-decoration: none;
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            border-top: 1px solid #e9ecef;
+            padding-top: 15px;
+        }
+
     </style>
 </head>
 <body>
@@ -141,7 +257,7 @@
                     <div class="post-header mt-3">
                         <img src="{{ $post->user->profile_image ? asset('users/' . $post->user->profile_image) : 'https://via.placeholder.com/150?text=User' }}" alt="Photo de profil">
                         <div>
-                            <p class="username">Publié par <strong>{{ '@' . $post->user->username }}</strong></p>
+                            <p class="username">Publié par <strong>{{ '@' . $post->user->name }}</strong></p>
                             <small class="text-muted">{{ $post->created_at->diffForHumans() }}</small>
                         </div>
                     </div>
@@ -156,9 +272,51 @@
                         <div class="post-actions">
                             <i class="bi bi-hand-thumbs-up"></i> {{ $post->likes->count() }} J'aime
                         </div>
-                        <a href="#" class="comments-btn">{{ $post->comments->count() }} Commentaires</a>
+                        <a href="#" class="comments-btn" data-bs-toggle="modal" data-bs-target="#commentsModal-{{ $post->id }}">Commentaires ({{ $post->comments->count() }})</a>
                     </div>
                 </div>
+
+                <!-- Comments Modal -->
+                <div class="modal fade" id="commentsModal-{{ $post->id }}" tabindex="-1" aria-labelledby="commentsModalLabel-{{ $post->id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="commentsModalLabel-{{ $post->id }}">{{ $post->title }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Comment form -->
+                                <form action="{{ route('comments.store', $post->id) }}" method="POST" class="mb-4">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="commentBody" class="form-label">Votre commentaire</label>
+                                        <textarea class="form-control" name="comment" id="commentBody" rows="3" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Post Comment</button>
+                                </form>
+
+                                <!-- Display existing comments -->
+                                <!-- Display existing comments -->
+                                <h6>Commentaires</h6>
+                                <ul class="list-group">
+                                    @foreach($post->comments as $comment)
+                                        <li class="list-group-item">
+                                            <strong>{{ $comment->user->name }}</strong>
+                                            <div class="comment-content">{{ $comment->comment }}</div>
+                                            <div class="comment-actions">
+                                                <a href="#">Like</a>
+                                                <a href="#">Delete</a>
+                                                <span class="comment-time">{{ $comment->created_at->diffForHumans() }}</span>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of Comments Modal -->
             </div>
         @endforeach
     </div>

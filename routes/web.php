@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -74,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/posts_list', [PostController::class, 'index'])->name('posts.index');
     Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
+    Route::post('/comments/{post}', [CommentController::class, 'store'])->name('comments.store');
 
 
 });
