@@ -9,6 +9,8 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- SweetAlert2 CSS -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         body {
@@ -195,6 +197,13 @@
             padding-top: 15px;
         }
 
+        .overlay-buttons {
+            top: 10px;
+            right: 10px;
+            z-index: 10; /* Ensure dropdown is above all other content */
+        }
+
+
     </style>
 </head>
 <body>
@@ -227,11 +236,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="postLocation" class="form-label">Lieu</label>
-                            <input type="text" class="form-control" id="postLocation" name="location">
+                            <input type="text" class="form-control" id="postLocation" name="location" required>
                         </div>
                         <div class="mb-3">
                             <label for="postMedia" class="form-label">Image ou Vidéo</label>
-                            <input type="file" class="form-control" id="postMedia" name="media" accept="image/*,video/*">
+                            <input type="file" class="form-control" id="postMedia" name="media" accept="image/*,video/*" required>
                         </div>
                         <button type="submit" class="btn btn-success">Publier</button>
                     </form>
@@ -241,87 +250,169 @@
     </div>
 
     <!-- Posts Listing -->
-    <div class="row">
-        @foreach($posts as $post)
-            <div class="col-md-6 mb-4"> <!-- Changed to col-md-6 to allow 2 posts per row -->
-                <div class="post-card">
-                    <!-- Check if media exists -->
-                    @if($post->media)
-                        @if($post->media->is_image)
-                            <img src="{{ asset($post->media->path) }}" alt="image" class="post-media">
-                        @else
-                            <video class="post-media" controls autoplay muted loop>
-                                <source src="{{ asset($post->media->path) }}" type="video/mp4">
-                                Votre navigateur ne supporte pas la lecture vidéo.
-                            </video>
-                        @endif
-                    @endif
+    <div class="container">
+        <div class="row">
+            @foreach($posts as $post)
+                <div class="col-md-6 mb-4">
+                    <div class="post-card position-relative">
+                        @if($post->media)
+                            <div class="media-container">
+                                @if($post->media->is_image)
+                                    <img src="{{ asset($post->media->path) }}" alt="image" class="post-media" width="1300px" height="953px"">
+                                @else
+                                    <video class="post-media" controls autoplay muted loop style="width: 100%; height: auto;">
+                                        <source src="{{ asset($post->media->path) }}" type="video/mp4">
+                                        Your browser does not support video playback.
+                                    </video>
+                                @endif
 
-                    <div class="post-header mt-3">
-                        <img src="{{ $post->user->profile_image ? asset('users/' . $post->user->profile_image) : 'https://via.placeholder.com/150?text=User' }}" alt="Photo de profil">
-                        <div>
-                            <p class="username">Publié par <strong>{{ '@' . $post->user->name }}</strong></p>
-                            <small class="text-muted">{{ $post->created_at->diffForHumans() }}</small>
-                        </div>
-                    </div>
-
-                    <div class="post-body mt-3">
-                        <h5>{{ $post->title }}</h5>
-                        <p>{{ $post->body }}</p>
-                        <p><i class="bi bi-geo-alt"></i> {{ $post->location ?? 'Lieu non spécifié' }}</p>
-                    </div>
-
-                    <div class="post-footer">
-                        <div class="post-actions">
-                            <i class="bi bi-hand-thumbs-up"></i> {{ $post->likes->count() }} J'aime
-                        </div>
-                        <a href="#" class="comments-btn" data-bs-toggle="modal" data-bs-target="#commentsModal-{{ $post->id }}">Commentaires ({{ $post->comments->count() }})</a>
-                    </div>
-                </div>
-
-                <!-- Comments Modal -->
-                <div class="modal fade" id="commentsModal-{{ $post->id }}" tabindex="-1" aria-labelledby="commentsModalLabel-{{ $post->id }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="commentsModalLabel-{{ $post->id }}">{{ $post->title }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Comment form -->
-                                <form id="commentForm-{{ $post->id }}" method="POST">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label for="commentBody" class="form-label">Votre commentaire</label>
-                                        <textarea class="form-control" name="comment" id="commentBody-{{ $post->id }}" rows="3" required></textarea>
+                                <!-- Dropdown for Edit and Delete (only if the user is the creator) -->
+                                @if(auth()->id() == $post->user_id)
+                                    <div class="overlay-buttons position-absolute top-0 end-0 p-2">
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton-{{ $post->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton-{{ $post->id }}">
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editPostModal-{{ $post->id }}">Edit</a></li>
+                                                <li><a class="dropdown-item text-danger" href="#" onclick="confirmDelete({{ $post->id }})">Delete</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <button type="submit" class="btn btn-success">Post Comment</button>
-                                </form>
+                                @endif
+                            </div>
+                        @endif
 
-                                <!-- Display existing comments -->
-                                <h6>Commentaires</h6>
-                                <ul class="list-group comment-list" id="commentList-{{ $post->id }}">
-                                    @foreach($post->comments as $comment)
-                                        <li class="list-group-item" id="comment-{{ $comment->id }}">
-                                            <strong>{{ $comment->user->name }}</strong>
-                                            <div class="comment-content">{{ $comment->comment }}</div>
-                                            <div class="comment-actions">
-                                                <a href="#" class="delete-comment" data-id="{{ $comment->id }}">Delete</a>
-                                                <span class="comment-time">{{ $comment->created_at->diffForHumans() }}</span>
-                                            </div>
-                                        </li>
-                                    @endforeach
-                                </ul>
-
+                        <!-- Post Details -->
+                        <div class="post-body mt-3">
+                            <h5>{{ $post->title }}</h5>
+                            <p>{{ $post->body }}</p>
+                            <p><i class="bi bi-geo-alt"></i> {{ $post->location ?? 'Location not specified' }}</p>
+                            <div class="post-footer">
+                                <div class="post-actions">
+                                    <i class="bi bi-hand-thumbs-up"></i> {{ $post->likes->count() }} J'aime
+                                </div>
+                                <a href="#" class="comments-btn" data-bs-toggle="modal" data-bs-target="#commentsModal-{{ $post->id }}">Commentaires ({{ $post->comments->count() }})</a>
                             </div>
                         </div>
+
+                            <div class="modal fade" id="commentsModal-{{ $post->id }}" tabindex="-1" aria-labelledby="commentsModalLabel-{{ $post->id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="commentsModalLabel-{{ $post->id }}">{{ $post->title }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Comment form -->
+                                            <form id="commentForm-{{ $post->id }}" method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="commentBody" class="form-label">Votre commentaire</label>
+                                                    <textarea class="form-control" name="comment" id="commentBody-{{ $post->id }}" rows="3" required></textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-success">Post Comment</button>
+                                            </form>
+
+                                            <!-- Display existing comments -->
+                                            <h6>Commentaires</h6>
+                                            <ul class="list-group comment-list" id="commentList-{{ $post->id }}">
+                                                @foreach($post->comments as $comment)
+                                                    <li class="list-group-item" id="comment-{{ $comment->id }}">
+                                                        <strong>{{ $comment->user->name }}</strong>
+                                                        <div class="comment-content">{{ $comment->comment }}</div>
+                                                        <div class="comment-actions">
+                                                            <a href="#" class="delete-comment" data-id="{{ $comment->id }}">Delete</a>
+                                                            <span class="comment-time">{{ $comment->created_at->diffForHumans() }}</span>
+                                                        </div>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <!-- Edit Post Modal -->
+                            <div class="modal fade" id="editPostModal-{{ $post->id }}" tabindex="-1" aria-labelledby="editPostModalLabel-{{ $post->id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editPostModalLabel-{{ $post->id }}">Modifier le Poste</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="editPostForm-{{ $post->id }}" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name="_method" value="PATCH">
+                                                <div class="mb-3">
+                                                    <label for="title" class="form-label">Titre</label>
+                                                    <input type="text" class="form-control" name="title" value="{{ $post->title }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="body" class="form-label">Contenu</label>
+                                                    <textarea class="form-control" name="body" rows="4" required>{{ $post->body }}</textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="location" class="form-label">Lieu</label>
+                                                    <input type="text" class="form-control" name="location" value="{{ $post->location }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="media" class="form-label">Image ou Vidéo</label>
+                                                    <input type="file" class="form-control" name="media" accept="image/*,video/*">
+                                                    <small>Actuel: {{ $post->media->path ?? 'Pas de média' }}</small>
+                                                </div>
+                                                <button type="submit" class="btn btn-success">Mettre à jour</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                     </div>
                 </div>
-                <!-- End of Comments Modal -->
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
 
+
+
+
+</div>
+<!-- Edit Post Modal -->
+<div class="modal fade" id="editPostModal-{{ $post->id }}" tabindex="-1" aria-labelledby="editPostModalLabel-{{ $post->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPostModalLabel-{{ $post->id }}">Edit Post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editPostForm-{{ $post->id }}" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="_method" value="PATCH">
+                    <div class="mb-3">
+                        <label for="editPostTitle-{{ $post->id }}" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="editPostTitle-{{ $post->id }}" name="title" value="{{ $post->title }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPostBody-{{ $post->id }}" class="form-label">Content</label>
+                        <textarea class="form-control" id="editPostBody-{{ $post->id }}" name="body" rows="4" required>{{ $post->body }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPostLocation-{{ $post->id }}" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="editPostLocation-{{ $post->id }}" name="location" value="{{ $post->location }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPostMedia-{{ $post->id }}" class="form-label">Image or Video</label>
+                        <input type="file" class="form-control" id="editPostMedia-{{ $post->id }}" name="media" accept="image/*,video/*">
+                        <small>Current: {{ $post->media->path ?? 'No media' }}</small>
+                    </div>
+                    <button type="submit" class="btn btn-success">Update Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Bootstrap JS -->
@@ -368,7 +459,6 @@
 </script>
 <script>
     $(document).ready(function() {
-        // For each post, bind the form submit event for real-time comments
         @foreach($posts as $post)
         $('#commentForm-{{ $post->id }}').on('submit', function(e) {
             e.preventDefault(); // Prevent default form submit behavior
@@ -409,19 +499,23 @@
         $(document).on('click', '.delete-comment', function(e) {
             e.preventDefault();
             var commentId = $(this).data('id'); // Get the comment ID
+            console.log('Comment ID:', commentId); // Add this line to debug the comment ID
+
+            // Ensure CSRF token is available
+            var token = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
                 type: 'DELETE',
-                url: '/comments/' + commentId, // Your delete route
+                url: '{{ route("comments.destroy", ":id") }}'.replace(':id', commentId), // Use route name with dynamic ID
                 data: {
-                    _token: $('input[name=_token]').val() // CSRF Token
+                    _token: token // CSRF Token
                 },
                 success: function(response) {
                     // Remove the comment from the DOM
                     $('#comment-' + commentId).remove();
                 },
-                error: function(error) {
-                    console.log(error);
+                error: function(xhr, status, error) {
+                    console.error(error);
                     alert('There was an error deleting your comment.');
                 }
             });
@@ -431,6 +525,111 @@
 
 
 </script>
+<script>
+    // Clear the input fields when the "New Post" modal is shown
+    $('#newPostModal').on('shown.bs.modal', function () {
+        // Clear the form inputs
+        $('#newPostForm')[0].reset();
+        // Optionally, clear the file input manually
+        $('#postMedia').val('');
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('form[id^="editPostForm-"]').on('submit', function(e) {
+            e.preventDefault();
+            var formId = $(this).attr('id');
+            var postId = formId.split('-').pop();
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: "{{ url('posts') }}/" + postId,
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    $('#editPostModal-' + postId).modal('hide');
+                    Swal.fire('Updated!', 'Your post has been updated successfully.', 'success');
+                    location.reload(); // Reload the page to see changes
+                },
+                error: function(response) {
+                    Swal.fire('Error!', 'Failed to update the post.', 'error');
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('form[id^="editPostForm-"]').on('submit', function(e) {
+            e.preventDefault();
+            var formId = $(this).attr('id');
+            var postId = formId.split('-').pop();
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: "/posts/" + postId, // Make sure the URL is correct
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), // Ensure CSRF token is included
+                    'X-HTTP-Method-Override': 'PATCH' // Use this if your server does not support PATCH
+                },
+                success: function(response) {
+                    $('#editPostModal-' + postId).modal('hide');
+                    location.reload()                },
+                error: function(xhr) { // Handle errors
+                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.error : 'Something went wrong!'; // Adjust based on your response structure
+                    location.reload()                }
+            });
+        });
+    });
+</script>
+
+<script>
+    var deletePostUrl = "{{ route('posts.destroy', ['post' => ':id']) }}"; // Placeholder for post ID
+    function confirmDelete(postId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: deletePostUrl.replace(':id', postId),
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your post has been deleted.',
+                            'success'
+                        );
+                        location.reload(); // Reload the page to update the list of posts
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Failed!',
+                            'There was an error deleting the post.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
 

@@ -73,9 +73,12 @@ Route::middleware(['auth'])->group(function () {
 
 // Begin:post and comment part
 Route::middleware(['auth'])->group(function () {
-    Route::get('/posts_list', [PostController::class, 'index'])->name('posts.index');
+        Route::get('/posts_list', [PostController::class, 'index'])->name('posts.index');
     Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
     Route::post('/comments/{post}', [CommentController::class, 'store'])->name('comments.store');
+    Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
 
