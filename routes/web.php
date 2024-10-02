@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,7 @@ use App\Http\Controllers\RecyclingCenterController;
 
 Route::get('/', function () {
     return view('welcome');
-})->name('home');  
+})->name('home');
 
 
 
@@ -69,10 +70,19 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/disposalRecords/{disposalRecord}', [DisposalRecordController::class, 'destroy'])->name('disposalRecords.destroy');
 });
 
+// Begin:post and comment part
+Route::middleware(['auth'])->group(function () {
+    Route::get('/posts_list', [PostController::class, 'index'])->name('posts.index');
+    Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
+
+
+});
+// End:post and comment part
+
 
 require __DIR__.'/auth.php';
 
-// categorie 
+// categorie
 Route::get('/categories', [CategoryController::class, 'index'])->name('CentreRecyclage.categorie');
 Route::get('/CentreRecyclage/{id}', [CategoryController::class, 'show'])->name('CentreRecyclage.show');
 Route::get('/CentreRecyclage', [RecyclingCenterController::class, 'create'])->name('CentreRecyclage.create');
