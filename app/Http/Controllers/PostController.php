@@ -23,42 +23,40 @@ class PostController extends Controller
                 'title' => 'required|string|max:255',
                 'body' => 'required|string',
                 'location' => 'nullable|string|max:255',
-                'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi|max:10240', // Accept image/video files up to 10MB
+                'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi|max:10240',
             ]);
 
             // Create the post
-            $post = $post = Post::create([
+            $post = Post::create([
                 'user_id' => auth()->id(),
                 'title' => $validatedData['title'],
                 'body' => $validatedData['body'],
                 'location' => $validatedData['location'],
             ]);
 
-            // Check if the media file exists and is accessible
             if ($request->hasFile('media') && $request->file('media')->isValid()) {
                 $file = $request->file('media');
 
-                // Generate a unique file name
                 $fileName = time() . '_' . $file->getClientOriginalName();
 
-                // Save the file directly in the public/posts directory
-                $path = $file->move(public_path('posts'), $fileName);
+                $filePath = $file->move(public_path('posts'), $fileName);
 
-                // Determine if the file is an image or video
-                $isImage = strpos($file->getMimeType(), 'image') !== false;
+//                $isImage = strpos($file->getMimeType(), 'image') !== false;
 
-
-
-                Media::create(
-                    [
-                        'post_id' => $post->id,
-                        'path' => 'posts/' . $fileName,
-                        'is_image' => $isImage,
-                    ]
-                );
+                // Save the media information
+                Media::create([
+                    'post_id' => $post->id,
+                    'path' => 'posts/' . $fileName,
+                    'is_image' => 1,
+                ]);
             }
 
-            return response()->json(['message' => 'Post created successfully']);
+            // Return a successful response with the post ID
+            return response()->json([
+                'message' => 'Post created successfully',
+                'post_id' => $post->id
+            ]);
+
         } catch (\Exception $e) {
             // Log detailed error information
             Log::error('Error creating post: ' . $e->getMessage(), [

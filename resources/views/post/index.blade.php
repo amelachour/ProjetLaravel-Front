@@ -29,7 +29,10 @@
         .post-media {
             border-radius: 10px;
             max-width: 100%;
-            height: auto;
+            max-height: 400px; /* Limit the maximum height */
+            object-fit: cover; /* Ensure that the image fills the box, while maintaining aspect ratio */
+            display: block;
+            margin: 0 auto;
         }
 
         /* Post Header */
@@ -240,15 +243,15 @@
     <!-- Posts Listing -->
     <div class="row">
         @foreach($posts as $post)
-            <div class="col-md-8 offset-md-2">
+            <div class="col-md-6 mb-4"> <!-- Changed to col-md-6 to allow 2 posts per row -->
                 <div class="post-card">
                     <!-- Check if media exists -->
                     @if($post->media)
                         @if($post->media->is_image)
-                            <img src="{{ asset("posts/" . $post->media->path) }}" alt="image" class="post-media">
+                            <img src="{{ asset($post->media->path) }}" alt="image" class="post-media">
                         @else
                             <video class="post-media" controls autoplay muted loop>
-                                <source src="{{ asset("posts/" . $post->media->path) }}" type="video/mp4">
+                                <source src="{{ asset($post->media->path) }}" type="video/mp4">
                                 Votre navigateur ne supporte pas la lecture vidéo.
                             </video>
                         @endif
@@ -277,7 +280,6 @@
                 </div>
 
                 <!-- Comments Modal -->
-                <!-- Comments Modal -->
                 <div class="modal fade" id="commentsModal-{{ $post->id }}" tabindex="-1" aria-labelledby="commentsModalLabel-{{ $post->id }}" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -297,7 +299,6 @@
                                 </form>
 
                                 <!-- Display existing comments -->
-                                <!-- Display existing comments -->
                                 <h6>Commentaires</h6>
                                 <ul class="list-group comment-list" id="commentList-{{ $post->id }}">
                                     @foreach($post->comments as $comment)
@@ -316,11 +317,11 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- End of Comments Modal -->
             </div>
         @endforeach
     </div>
+
 </div>
 
 <!-- Bootstrap JS -->
@@ -330,11 +331,11 @@
 
 <!-- Script to handle post creation and show SweetAlert -->
 <script>
-    $('#newPostForm').on('submit', function (e) {
+    $('#newPostForm').on('submit', function(e) {
         e.preventDefault();
 
         // Create FormData object for file upload
-        var formData = new FormData(this);
+        var formData = new FormData(this); // Ensure the 'this' refers to the form element
 
         $.ajax({
             url: "{{ route('posts.store') }}",
@@ -342,7 +343,7 @@
             data: formData,
             contentType: false, // Prevent jQuery from setting content-type
             processData: false, // Prevent jQuery from processing the data
-            success: function (response) {
+            success: function(response) {
                 $('#newPostModal').modal('hide');
                 Swal.fire({
                     title: 'Succès!',
@@ -354,7 +355,7 @@
                 // Optionally, you can reload the page or dynamically update the posts list
                 location.reload();
             },
-            error: function (error) {
+            error: function(error) {
                 Swal.fire({
                     title: 'Erreur!',
                     text: 'Il y a eu un problème lors de l\'ajout de la publication.',
@@ -432,3 +433,4 @@
 </script>
 </body>
 </html>
+
