@@ -17,7 +17,6 @@
             background-color: #f9f9f9;
         }
 
-        /* Post Card Styling */
         .post-card {
             background-color: #fff;
             border-radius: 10px;
@@ -27,12 +26,11 @@
             border-left: 5px solid #28a745;
         }
 
-        /* Media Styling */
         .post-media {
             border-radius: 10px;
             max-width: 100%;
-            max-height: 400px; /* Limit the maximum height */
-            object-fit: cover; /* Ensure that the image fills the box, while maintaining aspect ratio */
+            max-height: 400px;
+            object-fit: cover;
             display: block;
             margin: 0 auto;
         }
@@ -61,7 +59,7 @@
             color: gray;
         }
 
-        /* Comments Button */
+
         .comments-btn {
             background-color: #28a745;
             color: white;
@@ -85,7 +83,7 @@
             margin-bottom: 20px;
         }
 
-        /* Post Footer */
+
         .post-footer {
             display: flex;
             justify-content: space-between;
@@ -102,7 +100,7 @@
             margin-right: 5px;
         }
 
-        /* Comments Modal Styling */
+
         .modal-body {
             padding: 20px;
         }
@@ -121,7 +119,7 @@
             margin-bottom: 20px;
         }
 
-        /* Comment Form */
+
         .modal-body form .form-control {
             resize: none;
             border-radius: 8px;
@@ -155,13 +153,11 @@
             display: block;
         }
 
-        /* Comment Content */
         .comment-content {
             font-size: 14px;
             margin-bottom: 8px;
         }
 
-        /* Comment Actions */
         .comment-actions {
             display: flex;
             align-items: center;
@@ -200,7 +196,7 @@
         .overlay-buttons {
             top: 10px;
             right: 10px;
-            z-index: 10; /* Ensure dropdown is above all other content */
+            z-index: 10;
         }
 
 
@@ -210,12 +206,11 @@
 <div class="container mt-5">
     <h1 class="text-center mb-5 text-green">Toutes les publications</h1>
 
-    <!-- New Post Button -->
+
     <div class="text-center">
         <button class="btn btn-new-post" data-bs-toggle="modal" data-bs-target="#newPostModal">Ajouter une publication</button>
     </div>
 
-    <!-- New Post Modal -->
     <div class="modal fade" id="newPostModal" tabindex="-1" aria-labelledby="newPostModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
