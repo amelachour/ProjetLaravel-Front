@@ -11,19 +11,19 @@ class CommentController extends Controller
 {
     public function store(Request $request, Post $post)
     {
-        // Validate the incoming request
+
         $request->validate([
             'comment' => 'required|string|max:500',
         ]);
 
-        // Create a new comment
+
         $comment = Comment::create([
             'post_id' => $post->id,
             'user_id' => auth()->id(),
             'comment' => $request->comment,
         ]);
 
-        // Return a JSON response for AJAX
+
         return response()->json([
             'user' => auth()->user()->name,
             'comment' => $comment->comment,
@@ -34,10 +34,10 @@ class CommentController extends Controller
     public function destroy($id)
     {
         try {
-            // Try to find the comment by ID
+
             $comment = Comment::findOrFail($id);
 
-            // Delete the comment
+
             $comment->delete();
 
             return response()->json(['message' => 'Comment deleted successfully'], 200);

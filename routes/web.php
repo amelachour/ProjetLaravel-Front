@@ -71,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/disposalRecords/{disposalRecord}', [DisposalRecordController::class, 'destroy'])->name('disposalRecords.destroy');
 });
 
-// Begin:post and comment part
+// post and comment part
 Route::middleware(['auth'])->group(function () {
         Route::get('/posts_list', [PostController::class, 'index'])->name('posts.index');
     Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
@@ -83,7 +83,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 });
-// End:post and comment part
+
 
 
 require __DIR__.'/auth.php';
