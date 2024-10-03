@@ -12,7 +12,8 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::with('user', 'comments', 'likes', 'media')->latest()->get();
-        return view('post.index', compact('posts'));
+        return view('post.index',
+            compact('posts'));
     }
 
     public function store(Request $request)
@@ -24,8 +25,6 @@ class PostController extends Controller
                 'body' => 'required|string',
                 'location' => 'nullable|string|max:255',
             ]);
-
-
             $post = Post::create([
                 'user_id' => auth()->id(),
                 'title' => $validatedData['title'],
@@ -52,7 +51,6 @@ class PostController extends Controller
                 ]);
             }
 
-
             return response()->json([
                 'message' => 'Post created successfully',
                 'post_id' => $post->id
@@ -65,8 +63,6 @@ class PostController extends Controller
                 'request_data' => $request->all(),
                 'user_id' => auth()->id(),
             ]);
-
-
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

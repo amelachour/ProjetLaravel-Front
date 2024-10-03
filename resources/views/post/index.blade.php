@@ -249,7 +249,6 @@
         </div>
     </div>
 
-    <!-- Posts Listing -->
     <div class="container">
         <div class="row">
             @foreach($posts as $post)
