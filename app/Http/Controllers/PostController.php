@@ -34,16 +34,11 @@ class PostController extends Controller
 
             if ($request->hasFile('media') && $request->file('media')->isValid()) {
                 $file = $request->file('media');
-
                 $fileName = time() . '_' . $file->getClientOriginalName();
-
 
                 $filePath = $file->move(public_path('posts'), $fileName);
 
-
                 $isImage = in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif']);
-
-
                 Media::create([
                     'post_id' => $post->id,
                     'path' => 'posts/' . $fileName,

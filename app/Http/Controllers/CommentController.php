@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-
     public function store(Request $request, Post $post)
     {
         $request->validate([
@@ -20,15 +19,12 @@ class CommentController extends Controller
             'user_id' => auth()->id(),
             'comment' => $request->comment,
         ]);
-
-
         return response()->json([
             'user' => auth()->user()->name,
             'comment' => $comment->comment,
             'created_at' => $comment->created_at->diffForHumans()
         ]);
     }
-
     public function destroy($id)
     {
         try {
