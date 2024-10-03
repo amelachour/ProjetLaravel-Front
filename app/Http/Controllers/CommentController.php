@@ -14,11 +14,13 @@ class CommentController extends Controller
         $request->validate([
             'comment' => 'required|string|max:500',
         ]);
+
         $comment = Comment::create([
             'post_id' => $post->id,
             'user_id' => auth()->id(),
             'comment' => $request->comment,
         ]);
+
         return response()->json([
             'user' => auth()->user()->name,
             'comment' => $comment->comment,
