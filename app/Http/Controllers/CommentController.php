@@ -9,14 +9,12 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+
     public function store(Request $request, Post $post)
     {
-
         $request->validate([
             'comment' => 'required|string|max:500',
         ]);
-
-
         $comment = Comment::create([
             'post_id' => $post->id,
             'user_id' => auth()->id(),
@@ -34,12 +32,8 @@ class CommentController extends Controller
     public function destroy($id)
     {
         try {
-
             $comment = Comment::findOrFail($id);
-
-
             $comment->delete();
-
             return response()->json(['message' => 'Comment deleted successfully'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Comment not found'], 404);
