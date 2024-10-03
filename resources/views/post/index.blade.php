@@ -252,7 +252,7 @@
                         @if($post->media)
                             <div class="media-container">
                                 @if($post->media->is_image)
-                                    <img src="{{ asset($post->media->path) }}" alt="image" class="post-media" width="1300px" height="953px"">
+                                    <img src="{{ asset($post->media->path) }}" alt="image" class="post-media" width="1300px" height="953px">
                                 @else
                                     <video class="post-media" controls autoplay muted loop style="width: 100%; height: auto;">
                                         <source src="{{ asset($post->media->path) }}" type="video/mp4">
@@ -260,7 +260,6 @@
                                     </video>
                                 @endif
 
-                                <!-- Dropdown for Edit and Delete (only if the user is the creator) -->
                                 @if(auth()->id() == $post->user_id)
                                     <div class="overlay-buttons position-absolute top-0 end-0 p-2">
                                         <div class="dropdown">
@@ -277,7 +276,6 @@
                             </div>
                         @endif
 
-                        <!-- Post Details -->
                         <div class="post-body mt-3">
                             <h5>{{ $post->title }}</h5>
                             <p>{{ $post->body }}</p>
@@ -298,7 +296,6 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <!-- Comment form -->
                                             <form id="commentForm-{{ $post->id }}" method="POST">
                                                 @csrf
                                                 <div class="mb-3">
@@ -308,7 +305,6 @@
                                                 <button type="submit" class="btn btn-success">Post Comment</button>
                                             </form>
 
-                                            <!-- Display existing comments -->
                                             <h6>Commentaires</h6>
                                             <ul class="list-group comment-list" id="commentList-{{ $post->id }}">
                                                 @foreach($post->comments as $comment)
@@ -327,7 +323,7 @@
                                     </div>
                                 </div>
                             </div>
-                        <!-- Edit Post Modal -->
+
                             <div class="modal fade" id="editPostModal-{{ $post->id }}" tabindex="-1" aria-labelledby="editPostModalLabel-{{ $post->id }}" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -414,20 +410,19 @@
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
-<!-- Script to handle post creation and show SweetAlert -->
+
 <script>
     $('#newPostForm').on('submit', function(e) {
         e.preventDefault();
 
-        // Create FormData object for file upload
-        var formData = new FormData(this); // Ensure the 'this' refers to the form element
+        var formData = new FormData(this);
 
         $.ajax({
             url: "{{ route('posts.store') }}",
             type: "POST",
             data: formData,
-            contentType: false, // Prevent jQuery from setting content-type
-            processData: false, // Prevent jQuery from processing the data
+            contentType: false,
+            processData: false,
             success: function(response) {
                 $('#newPostModal').modal('hide');
                 Swal.fire({
@@ -437,7 +432,6 @@
                     confirmButtonText: 'OK'
                 });
 
-                // Optionally, you can reload the page or dynamically update the posts list
                 location.reload();
             },
             error: function(error) {
@@ -455,7 +449,7 @@
     $(document).ready(function() {
         @foreach($posts as $post)
         $('#commentForm-{{ $post->id }}').on('submit', function(e) {
-            e.preventDefault(); // Prevent default form submit behavior
+            e.preventDefault();
 
             var formData = {
                 comment: $('#commentBody-{{ $post->id }}').val(),
@@ -464,10 +458,10 @@
 
             $.ajax({
                 type: 'POST',
-                url: '{{ route("comments.store", $post->id) }}', // Post the comment to this post's comment route
+                url: '{{ route("comments.store", $post->id) }}',
                 data: formData,
                 success: function(response) {
-                    // Add the new comment to the list without refreshing
+
                     $('#commentList-{{ $post->id }}').prepend(`
                     <li class="list-group-item" id="comment-${response.comment_id}">
                         <strong>${response.user}</strong>
@@ -479,7 +473,7 @@
                     </li>
                 `);
 
-                    // Clear the textarea
+
                     $('#commentBody-{{ $post->id }}').val('');
                 },
                 error: function(error) {
@@ -489,23 +483,22 @@
             });
         });
 
-        // Delete Comment with AJAX
         $(document).on('click', '.delete-comment', function(e) {
             e.preventDefault();
-            var commentId = $(this).data('id'); // Get the comment ID
-            console.log('Comment ID:', commentId); // Add this line to debug the comment ID
+            var commentId = $(this).data('id');
+            console.log('Comment ID:', commentId);
 
-            // Ensure CSRF token is available
+
             var token = $('meta[name="csrf-token"]').attr('content');
 
             $.ajax({
                 type: 'DELETE',
                 url: '{{ route("comments.destroy", ":id") }}'.replace(':id', commentId), // Use route name with dynamic ID
                 data: {
-                    _token: token // CSRF Token
+                    _token: token
                 },
                 success: function(response) {
-                    // Remove the comment from the DOM
+
                     $('#comment-' + commentId).remove();
                 },
                 error: function(xhr, status, error) {
@@ -520,11 +513,11 @@
 
 </script>
 <script>
-    // Clear the input fields when the "New Post" modal is shown
+
     $('#newPostModal').on('shown.bs.modal', function () {
-        // Clear the form inputs
+
         $('#newPostForm')[0].reset();
-        // Optionally, clear the file input manually
+
         $('#postMedia').val('');
     });
 </script>
@@ -545,7 +538,7 @@
                 success: function(response) {
                     $('#editPostModal-' + postId).modal('hide');
                     Swal.fire('Updated!', 'Your post has been updated successfully.', 'success');
-                    location.reload(); // Reload the page to see changes
+                    location.reload();
                 },
                 error: function(response) {
                     Swal.fire('Error!', 'Failed to update the post.', 'error');
@@ -564,14 +557,14 @@
             var formData = new FormData(this);
 
             $.ajax({
-                url: "/posts/" + postId, // Make sure the URL is correct
+                url: "/posts/" + postId,
                 type: "POST",
                 data: formData,
                 contentType: false,
                 processData: false,
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), // Ensure CSRF token is included
-                    'X-HTTP-Method-Override': 'PATCH' // Use this if your server does not support PATCH
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'X-HTTP-Method-Override': 'PATCH'
                 },
                 success: function(response) {
                     $('#editPostModal-' + postId).modal('hide');
@@ -585,7 +578,7 @@
 </script>
 
 <script>
-    var deletePostUrl = "{{ route('posts.destroy', ['post' => ':id']) }}"; // Placeholder for post ID
+    var deletePostUrl = "{{ route('posts.destroy', ['post' => ':id']) }}";
     function confirmDelete(postId) {
         Swal.fire({
             title: 'Are you sure?',
@@ -609,7 +602,7 @@
                             'Your post has been deleted.',
                             'success'
                         );
-                        location.reload(); // Reload the page to update the list of posts
+                        location.reload();
                     },
                     error: function() {
                         Swal.fire(
