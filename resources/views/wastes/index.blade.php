@@ -12,6 +12,12 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
     
     <style>
       
@@ -163,12 +169,78 @@
         background-color: white;
         border-color: white;
     }
+
+  
+    .alert-container {
+        position: relative; /* Position relative pour le conteneur */
+        display: flex; /* Utilisation de flexbox pour l'alignement */
+        justify-content: flex-end; /* Aligne le contenu à droite */
+        margin-top: 120px;
+        margin-bottom: 20px; /* Espace en bas du conteneur */
+        
+    }
+
+    .custom-alert {
+        font-size: 1.25rem; /* Taille de la police plus grande */
+        /* Espacement intérieur plus important */
+        border-radius: 10px; /* Coins arrondis */
+        margin-left: 10px; /* Espace entre les alertes si plusieurs sont affichées */
+        max-width: 500px; /* Largeur maximale pour les alertes */
+       /* Permet à l'alerte de ne pas occuper toute la largeur */
+    }
+
+    .alert-success {
+        background-color: #ffcc00; /* Couleur de fond pour le succès */
+        color: #155724; /* Couleur du texte pour le succès */
+        border-color: #ffcc00; /* Couleur de la bordure pour le succès */
+        width: 240px;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da; /* Couleur de fond pour l'erreur */
+        color: #721c24; /* Couleur du texte pour l'erreur */
+        border-color: #f5c6cb; /* Couleur de la bordure pour l'erreur */
+    }
+
+
+
+
 </style>
 
 
 
       
-        <section id="waste-list" class="s-content container ">
+<style>
+    .blur {
+        filter: blur(1.5px); 
+        pointer-events: none; 
+    }
+</style>
+ <!-- Display success and error messages -->
+ <div class="container">
+    <div class="alert-container"> <!-- Conteneur pour l'alignement -->
+        @if(session('success'))
+            <div class="alert alert-success custom-alert alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger custom-alert alert-dismissible fade show" role="alert">
+                {{ $errors->first() }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+    </div>
+</div>
+
+
+<section id="waste-list" class="s-content container ">
     <h4 class="py-3 mb-4">Liste des Déchets</h4>
     <div class="text-right mb-3">
         <a href="{{ route('wastes.create') }}" class="btn btn-primary">
@@ -179,7 +251,7 @@
     <div class="row">
         @foreach($wastes as $waste)
             <div class="col-md-4 mb-4">
-                <div class="card shadow-sm border-0 hover-card">
+                <div class="card shadow-sm border-0 hover-card {{ $waste->status == 'éliminé' ? 'blur' : '' }}">
                     <img src="{{ asset('images/waste_types/' . strtolower($waste->type) . '.png') }}" class="card-img-top" alt="{{ $waste->type }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ ucfirst($waste->type) }}</h5>
@@ -192,23 +264,23 @@
                         </p>
                     </div>
                     <div class="card-footer text-right">
-    <a href="{{ route('wastes.edit', $waste->id) }}" title="Modifier" style="color: #009082;">
-        <i class="mdi mdi-pencil" style="font-size: 28px;"></i>
-    </a>
-    <form action="{{ route('wastes.destroy', $waste->id) }}" method="POST" class="delete-form" style="display:inline;">
-        @csrf
-        @method('DELETE')
-        <button type="button" class="delete-btn" title="Supprimer" style="border: none; background: none; padding: 0; cursor: pointer;">
-            <i class="mdi mdi-trash-can" style="font-size: 28px; color: #dc3545;"></i>
-        </button>
-    </form>
-</div>
-
+                        <a href="{{ route('wastes.edit', $waste->id) }}" title="Modifier" style="color: #009082;" {{ $waste->status == 'éliminé' ? 'disabled' : '' }}>
+                            <i class="mdi mdi-pencil" style="font-size: 28px;"></i>
+                        </a>
+                        <form action="{{ route('wastes.destroy', $waste->id) }}" method="POST" class="delete-form" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="delete-btn" title="Supprimer" style="border: none; background: none; padding: 0; cursor: pointer;">
+                                <i class="mdi mdi-trash-can" style="font-size: 28px; color: #dc3545;"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         @endforeach
     </div>
 </section>
+
 
 <style>
     .hover-card {
@@ -234,31 +306,48 @@
     <script src="js/main.js"></script>
 
     <script>
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function (event) {
-            event.preventDefault(); 
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
 
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault(); // Empêche l'action par défaut du bouton
+
+            const form = this.closest('form'); // Trouve le formulaire parent
+            const wasteType = form.dataset.wasteType; // Récupère le type de déchet depuis l'attribut data
+
+            // Affiche une alerte de confirmation
             Swal.fire({
-                title: 'Voulez-vous vraiment supprimer?',
-                text: "Cette action est irréversible!",
+                title: 'Êtes-vous sûr ?',
+                text: `Vous allez supprimer ce déchet : ${wasteType}. Cette action est irréversible.`,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Oui',
-                cancelButtonText: 'Non',
-                customClass: {
-                    confirmButton: 'btn-confirm',
-                    cancelButton: 'btn-cancel'
-                }
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Oui, supprimer !',
+                cancelButtonText: 'Annuler'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.closest('form').submit();
+                    form.submit(); // Soumet le formulaire si l'utilisateur confirme
                 }
             });
         });
     });
+});
+
+
 </script>
+<script>
+    // Fonction pour cacher les alertes après 3 secondes
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert'); // Sélectionne toutes les alertes
+        alerts.forEach(alert => {
+            alert.classList.remove('show'); // Retire la classe 'show' pour cacher l'alerte
+            alert.classList.add('fade'); // Ajoute la classe 'fade' pour un effet de disparition
+        });
+    }, 3000); // Délai de 3 secondes (3000 millisecondes)
+</script>
+
 <style>
    
     .swal2-styled.swal2-confirm.btn-confirm {

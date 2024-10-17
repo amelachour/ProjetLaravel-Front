@@ -8,7 +8,12 @@
     <link rel="stylesheet" href="{{ asset('css/vendor.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css">
-    
+   <!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   
     <style>
   
   body {
@@ -192,28 +197,49 @@
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-  <script>
-        // Check if the session has a success message
-        @if(session('success'))
-            document.addEventListener('DOMContentLoaded', function () {
-                Swal.fire({
-                    title: 'Succès!',
-                    text: '{{ session('success') }}',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    timer: 3000, // L'alerte disparaît après 3 secondes
-                    didClose: () => {
-                        // Redirection seulement après que l'alerte soit fermée
-                        window.location = '{{ route('wastes.index') }}';
-                    }
-                });
-            });
-        @endif
-    </script>
+    
     <!-- JavaScript Files -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
+
+    <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <title>Ajouter Déchet</title>
+</head>
+<body>
+    <h1>Ajouter un Déchet</h1>
+    <form id="addWasteForm" action="/votre-endpoint" method="POST">
+        <!-- Vos champs de formulaire ici -->
+        <input type="text" name="nom" placeholder="Nom du déchet" required>
+        <input type="number" name="quantité" placeholder="Quantité" required>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Vérifiez si le message de succès est présent dans les attributs du modèle
+            const successMessage = /* Récupérez votre message ici, selon la technologie que vous utilisez */;
+            if (successMessage) {
+                Swal.fire({
+                    title: 'Ajouté!',
+                    text: successMessage,
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500 // Durée du toast en ms
+                });
+            }
+        });
+    </script>
+   
+</body>
+</html>
+
 </body>
 </html>
