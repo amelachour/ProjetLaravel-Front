@@ -118,13 +118,16 @@
                     <div class="mb-3">
                         <label for="waste_id" class="form-label">Déchet</label>
                         <select class="form-select" id="waste_id" name="waste_id" required>
-                            <option value="" disabled selected>Sélectionnez un déchet</option>
-                            @foreach($wastes as $waste)
-                                <option value="{{ $waste->id }}" {{ old('waste_id') == $waste->id ? 'selected' : '' }}>
-                                    {{ $waste->type }}
-                                </option>
-                            @endforeach
-                        </select>
+    <option value="" disabled selected>Sélectionnez un déchet</option>
+    @foreach($wastes as $waste)
+        @if($waste->status != 'éliminé') 
+            <option value="{{ $waste->id }}" {{ old('waste_id') == $waste->id ? 'selected' : '' }}>
+                {{ $waste->type }}
+            </option>
+        @endif
+    @endforeach
+</select>
+
                         @error('waste_id')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
@@ -136,13 +139,13 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="disposal_date" class="form-label">Date d’Élimination</label>
                         <input type="date" class="form-control" id="disposal_date" name="disposal_date" value="{{ old('disposal_date') }}" required>
                         @error('disposal_date')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
-                    </div>
+                    </div> -->
                     <div class="mb-3">
                         <label for="location" class="form-label">Lieu</label>
                         <input type="text" class="form-control" id="location" name="location" value="{{ old('location') }}" required>
