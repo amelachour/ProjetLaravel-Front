@@ -197,35 +197,12 @@
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<<<<<<< HEAD
-  <script>
-        // Check if the session has a success message
-        @if(session('success'))
-            document.addEventListener('DOMContentLoaded', function () {
-                Swal.fire({
-                    title: 'Succès!',
-                    text: '{{ session('success') }}',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    timer: 3000, // L'alerte disparaît après 3 secondes
-                    didClose: () => {
-                        // Redirection seulement après que l'alerte soit fermée
-                        window.location = '{{ route('wastes.index') }}';
-                    }
-                });
-            });
-        @endif
-    </script>
-=======
     
->>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
     <!-- JavaScript Files -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-<<<<<<< HEAD
-=======
 
     <!DOCTYPE html>
 <html lang="fr">
@@ -264,6 +241,5 @@
 </body>
 </html>
 
->>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
 </body>
 </html>

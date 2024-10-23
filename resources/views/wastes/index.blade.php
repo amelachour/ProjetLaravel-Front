@@ -169,8 +169,6 @@
         background-color: white;
         border-color: white;
     }
-<<<<<<< HEAD
-=======
 
   
     .alert-container {
@@ -207,15 +205,11 @@
 
 
 
->>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
 </style>
 
 
 
       
-<<<<<<< HEAD
-        <section id="waste-list" class="s-content container ">
-=======
 <style>
     .blur {
         filter: blur(1.5px); 
@@ -247,7 +241,6 @@
 
 
 <section id="waste-list" class="s-content container ">
->>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
     <h4 class="py-3 mb-4">Liste des Déchets</h4>
     <div class="text-right mb-3">
         <a href="{{ route('wastes.create') }}" class="btn btn-primary">
@@ -258,11 +251,7 @@
     <div class="row">
         @foreach($wastes as $waste)
             <div class="col-md-4 mb-4">
-<<<<<<< HEAD
-                <div class="card shadow-sm border-0 hover-card">
-=======
                 <div class="card shadow-sm border-0 hover-card {{ $waste->status == 'éliminé' ? 'blur' : '' }}">
->>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
                     <img src="{{ asset('images/waste_types/' . strtolower($waste->type) . '.png') }}" class="card-img-top" alt="{{ $waste->type }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ ucfirst($waste->type) }}</h5>
@@ -275,20 +264,6 @@
                         </p>
                     </div>
                     <div class="card-footer text-right">
-<<<<<<< HEAD
-    <a href="{{ route('wastes.edit', $waste->id) }}" title="Modifier" style="color: #009082;">
-        <i class="mdi mdi-pencil" style="font-size: 28px;"></i>
-    </a>
-    <form action="{{ route('wastes.destroy', $waste->id) }}" method="POST" class="delete-form" style="display:inline;">
-        @csrf
-        @method('DELETE')
-        <button type="button" class="delete-btn" title="Supprimer" style="border: none; background: none; padding: 0; cursor: pointer;">
-            <i class="mdi mdi-trash-can" style="font-size: 28px; color: #dc3545;"></i>
-        </button>
-    </form>
-</div>
-
-=======
                         <a href="{{ route('wastes.edit', $waste->id) }}" title="Modifier" style="color: #009082;" {{ $waste->status == 'éliminé' ? 'disabled' : '' }}>
                             <i class="mdi mdi-pencil" style="font-size: 28px;"></i>
                         </a>
@@ -300,17 +275,12 @@
                             </button>
                         </form>
                     </div>
->>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
                 </div>
             </div>
         @endforeach
     </div>
 </section>
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
 <style>
     .hover-card {
         transition: transform 0.3s, box-shadow 0.3s;
@@ -335,28 +305,6 @@
     <script src="js/main.js"></script>
 
     <script>
-<<<<<<< HEAD
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function (event) {
-            event.preventDefault(); 
-
-            Swal.fire({
-                title: 'Voulez-vous vraiment supprimer?',
-                text: "Cette action est irréversible!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Oui',
-                cancelButtonText: 'Non',
-                customClass: {
-                    confirmButton: 'btn-confirm',
-                    cancelButton: 'btn-cancel'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.closest('form').submit();
-=======
 document.addEventListener('DOMContentLoaded', function() {
     const deleteButtons = document.querySelectorAll('.delete-btn');
 
@@ -380,14 +328,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit(); // Soumet le formulaire si l'utilisateur confirme
->>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
                 }
             });
         });
     });
-<<<<<<< HEAD
-</script>
-=======
 });
 
 
@@ -403,7 +347,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 3000); // Délai de 3 secondes (3000 millisecondes)
 </script>
 
->>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
 <style>
    
     .swal2-styled.swal2-confirm.btn-confirm {
