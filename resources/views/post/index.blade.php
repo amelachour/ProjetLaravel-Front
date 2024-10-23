@@ -168,6 +168,26 @@
         }
 
     </style>
+    <style>
+        .modal-header-custom {
+            justify-content: center;
+            position: relative;
+            border-bottom: none;
+            padding: 1rem 1.5rem;
+        }
+
+        .modal-header-custom .modal-title {
+            font-weight: bold;
+            margin: 0 auto;
+        }
+
+        .modal-header-custom .btn-close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+        }
+    </style>
+
 </head>
 <body>
 <div class="container py-4">
@@ -222,7 +242,10 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <i class="fas fa-heart text-danger"></i>
-                        <span class="ms-1">{{ $post->likes->count() }} J'aime</span>
+                        <span id="likeCount-{{ $post->id }}" class="ms-1">{{ $post->likes->count() }} J'aime</span>
+                        <button class="btn btn-link p-0 m-0 text-decoration-none" onclick="viewAllDetails({{ $post->id }})">
+                            <span style="font-size: 15px">View all</span>
+                        </button>
                     </div>
                     <div>
                         <span>{{ $post->comments->count() }} Commentaires</span>
@@ -230,16 +253,23 @@
                 </div>
             </div>
 
+
             <!-- Interaction Buttons -->
             <div class="d-flex justify-content-around p-2 border-bottom">
-                <button class="interaction-button p-2 flex-grow-1">
-                    <i class="fas fa-heart me-2"></i>Like
+                <button class="interaction-button like-button p-2 flex-grow-1 @if($post->likes->contains('user_id', auth()->id())) liked @endif"
+                        data-post-id="{{ $post->id }}">
+                    @if($post->likes->contains('user_id', auth()->id()))
+                        <i class="fas fa-heart text-danger me-2"></i>Unlike
+                    @else
+                        <i class="fas fa-heart me-2"></i>Like
+                    @endif
                 </button>
                 <button class="interaction-button p-2 flex-grow-1" data-bs-toggle="modal"
                         data-bs-target="#commentsModal-{{ $post->id }}">
                     <i class="fas fa-comment me-2"></i>Comment
                 </button>
             </div>
+
 
             <!-- Comments Section -->
             <div class="p-3 comment-section" data-post-id="{{ $post->id }}">
@@ -281,14 +311,18 @@
 
 </div>
 
+
+
 <!-- Modal for creating a new post -->
 <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header modal-header-custom">
                 <h5 class="modal-title" id="formModalLabel">Ajouter une nouvelle publication</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
+
             <div class="modal-body">
                 <form id="contentForm" action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -366,6 +400,30 @@
         </div>
     </div>
 </div>
+
+<!-- View All Modal -->
+<div class="modal fade" id="viewAllModal" tabindex="-1" aria-labelledby="viewAllModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewAllModalLabel">Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Likes</h6>
+                <ul id="viewAllLikesList" class="list-group mb-4">
+                    <!-- Likes will be dynamically populated here -->
+                </ul>
+
+                <h6>Comments</h6>
+                <ul id="viewAllCommentsList" class="list-group">
+                    <!-- Comments will be dynamically populated here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -660,7 +718,105 @@
     }
 
 </script>
+{{--like part--}}
+<script>
+    $(document).on('click', '.interaction-button.like-button', function() {
+        let postId = $(this).data('post-id');
+        let button = $(this);
+
+        if (button.hasClass('liked')) {
+            // Unlike the post
+            $.ajax({
+                url: `/posts/${postId}/unlike`,
+                type: "DELETE",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    button.removeClass('liked');
+                    button.html(`<i class="fas fa-heart me-2"></i>Like`);
+                    $(`#likeCount-${postId}`).text(response.like_count + " J'aime");
+                },
+                error: function() {
+                    Swal.fire('Erreur!', 'Impossible d\'annuler le like.', 'error');
+                }
+            });
+        } else {
+            // Like the post
+            $.ajax({
+                url: `/posts/${postId}/like`,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    button.addClass('liked');
+                    button.html(`<i class="fas fa-heart text-danger me-2"></i>Unlike`);
+                    $(`#likeCount-${postId}`).text(response.like_count + " J'aime");
+                },
+                error: function() {
+                    Swal.fire('Erreur!', 'Impossible d\'aimer la publication.', 'error');
+                }
+            });
+        }
+    });
 
 
+    function viewAllDetails(postId) {
+        $.ajax({
+            url: `/posts/${postId}/likes`, // Ensure this matches the route you added
+            type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                let likesList = $('#viewAllLikesList');
+                let commentsList = $('#viewAllCommentsList');
+
+                // Clear previous lists
+                likesList.empty();
+                commentsList.empty();
+
+                // Populate likes
+                if (response.likes.length > 0) {
+                    response.likes.forEach(function(like) {
+                        likesList.append(`
+                        <li class="list-group-item d-flex align-items-center">
+                            <img src="${like.user_avatar}" alt="${like.user_name}" class="user-avatar me-2" style="width: 32px; height: 32px;">
+                            <span>${like.user_name}</span>
+                        </li>
+                    `);
+                    });
+                } else {
+                    likesList.append('<li class="list-group-item text-center">No likes yet</li>');
+                }
+
+                // Populate comments
+                if (response.comments.length > 0) {
+                    response.comments.forEach(function(comment) {
+                        commentsList.append(`
+                        <li class="list-group-item d-flex align-items-start">
+                            <img src="${comment.user_avatar}" alt="${comment.user_name}" class="user-avatar me-2" style="width: 32px; height: 32px;">
+                            <div>
+                                <strong>${comment.user_name}</strong>
+                                <p>${comment.comment}</p>
+                            </div>
+                        </li>
+                    `);
+                    });
+                } else {
+                    commentsList.append('<li class="list-group-item text-center">No comments yet</li>');
+                }
+
+                // Show the modal
+                $('#viewAllModal').modal('show');
+            },
+            error: function() {
+                Swal.fire('Erreur!', 'Impossible de récupérer les informations.', 'error');
+            }
+        });
+    }
+
+</script>
 </body>
 </html>
