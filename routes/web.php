@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -77,10 +79,23 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/disposalRecords/{disposalRecord}', [DisposalRecordController::class, 'destroy'])->name('disposalRecords.destroy');
 });
 
+// post and comment part
+Route::middleware(['auth'])->group(function () {
+        Route::get('/posts_list', [PostController::class, 'index'])->name('posts.index');
+    Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
+    Route::post('/comments/{post}', [CommentController::class, 'store'])->name('comments.store');
+    Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+
+});
+
+
 
 require __DIR__.'/auth.php';
 
-// categorie 
+// categorie
 Route::get('/categories', [CategoryController::class, 'index'])->name('CentreRecyclage.categorie');
 Route::get('/CentreRecyclage/{id}', [CategoryController::class, 'show'])->name('CentreRecyclage.show');
 Route::get('/CentreRecyclage', [RecyclingCenterController::class, 'create'])->name('CentreRecyclage.create');
@@ -92,12 +107,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('events.participations', ParticipationController::class)->shallow();
 });
 
-Route::middleware(['auth'])->group(function () {
-// Route pour le formulaire de création d'un participant
-Route::get('events/{event}/participants/create', [ParticipationController::class, 'create'])->name('participants.create');
-// Route pour stocker un participant
-Route::post('participants', [ParticipationController::class, 'store'])->name('participants.store');
-});
 
 Route::middleware(['auth'])->group(function () {
 Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');

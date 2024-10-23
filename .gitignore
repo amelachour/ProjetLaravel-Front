@@ -17,3 +17,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+<<<<<<< HEAD
+=======
+/public/posts
+>>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18

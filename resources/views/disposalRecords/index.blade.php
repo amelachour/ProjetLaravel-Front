@@ -110,7 +110,41 @@
             background-color: #c82333; /* Darker shade on hover */
             transform: translateY(-2px); /* Lift effect on hover */
         }
-    </style>
+        .alert-container {
+        position: relative; /* Position relative pour le conteneur */
+        display: flex; /* Utilisation de flexbox pour l'alignement */
+        justify-content: flex-end; /* Aligne le contenu à droite */
+        margin-top: 120px;
+        margin-bottom: 20px; /* Espace en bas du conteneur */
+        
+    }
+
+    .custom-alert {
+        font-size: 1.25rem; /* Taille de la police plus grande */
+        /* Espacement intérieur plus important */
+        border-radius: 10px; /* Coins arrondis */
+        margin-left: 10px; /* Espace entre les alertes si plusieurs sont affichées */
+        max-width: 500px; /* Largeur maximale pour les alertes */
+       /* Permet à l'alerte de ne pas occuper toute la largeur */
+    }
+
+    .alert-success {
+        background-color: #ffcc00; /* Couleur de fond pour le succès */
+        color: #155724; /* Couleur du texte pour le succès */
+        border-color: #ffcc00; /* Couleur de la bordure pour le succès */
+        width: 240px;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da; /* Couleur de fond pour l'erreur */
+        color: #721c24; /* Couleur du texte pour l'erreur */
+        border-color: #f5c6cb; /* Couleur de la bordure pour l'erreur */
+    }
+
+
+
+
+</style>
 </head>
 
 <body id="top">
@@ -122,9 +156,36 @@
     <div id="page" class="s-pagewrap">
        
 
+<<<<<<< HEAD
 
 
 <section id="content" class="s-content container">
+=======
+    <div class="container">
+    <div class="alert-container"> <!-- Conteneur pour l'alignement -->
+        @if(session('success'))
+            <div class="alert alert-success custom-alert alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger custom-alert alert-dismissible fade show" role="alert">
+                {{ $errors->first() }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+    </div>
+</div>
+
+
+    <section id="content" class="s-content container">
+>>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
     <h4 class="py-3 mb-4">Liste des Enregistrements d’Élimination</h4>
 
     <!-- Add Button -->
@@ -135,29 +196,47 @@
     </div>
 
     <!-- Card Container -->
+<<<<<<< HEAD
     <div class="row mt-5" >
         @foreach($disposalRecords as $record)
             <div class="col-md-4 mb-4" > <!-- 3 cards per row -->
                 <div class="card shadow-sm border-0 hover-card">
                     <div class="card-header  text-white">
+=======
+    <div class="row mt-5">
+        @foreach($disposalRecords as $record)
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0 hover-card {{ $record->status == 'traitée' ? 'blurred' : '' }}">
+                    <div class="card-header text-white" style="{{ $record->status == 'traitée' ? 'opacity: 0.5;' : '' }}">
+>>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
                         <h5 class="card-title">{{ $record->waste->type }}</h5>
                     </div>
                     <div class="card-body">
                         <p><strong>Méthode:</strong> {{ $record->method }}</p>
+<<<<<<< HEAD
                         <!-- <p><strong>Date d’Élimination:</strong> {{ $record->disposal_date }}</p> -->
+=======
+>>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
                         <p><strong>Lieu:</strong> {{ $record->location }}</p>
                         <p><strong>Status:</strong> <span class="badge badge-{{ $record->status == 'Completed' ? 'success' : 'warning' }}">{{ $record->status }}</span></p>
                     </div>
 
+<<<<<<< HEAD
 
 
                     <div class="card-footer text-right">
                         <a href="{{ route('disposalRecords.edit', $record->id) }}" title="Modifier" style="color: #009082;">
                             <i class="mdi mdi-pencil" style="font-size: 28px;"></i>
+=======
+                    <div class="card-footer text-right">
+                        <a href="{{ route('disposalRecords.edit', $record->id) }}" title="Modifier" style="color: #009082;" {{ $record->status == 'traitée' ? 'disabled' : '' }}>
+                            <i class="mdi mdi-pencil" style="font-size: 28px; {{ $record->status == 'traitée' ? 'pointer-events: none; color: gray;' : '' }}"></i>
+>>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
                         </a>
                         <form action="{{ route('disposalRecords.destroy', $record->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
+<<<<<<< HEAD
                               
                             <button type="button" class="delete-btn" title="Supprimer" style="border: none; background: none; padding: 0; cursor: pointer;">
                             
@@ -170,12 +249,35 @@
 
 
 
+=======
+                            <button type="button" class="delete-btn" title="Supprimer" style="border: none; background: none; padding: 0; cursor: pointer;">
+                                <i class="mdi mdi-trash-can" style="font-size: 28px; color: #dc3545;"></i>
+                            </button>
+                        </form>
+                    </div>
+>>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
                 </div>
             </div>
         @endforeach
     </div>
 </section>
 
+<<<<<<< HEAD
+=======
+<style>
+    .blurred {
+        filter: blur(0.5px); /* Apply blur effect */
+        pointer-events: none; /* Disable pointer events */
+    }
+
+    .card-footer a[disabled] {
+        pointer-events: none; /* Disable clicks on edit */
+        color: gray; /* Change color to indicate disabled state */
+    }
+</style>
+
+
+>>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
 
 
 
@@ -237,7 +339,20 @@
         box-shadow: none !important; 
     }
 </style>
+<<<<<<< HEAD
 
+=======
+<script>
+    // Fonction pour cacher les alertes après 3 secondes
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.alert'); // Sélectionne toutes les alertes
+        alerts.forEach(alert => {
+            alert.classList.remove('show'); // Retire la classe 'show' pour cacher l'alerte
+            alert.classList.add('fade'); // Ajoute la classe 'fade' pour un effet de disparition
+        });
+    }, 3000); // Délai de 3 secondes (3000 millisecondes)
+</script>
+>>>>>>> 1503bab61f6b3cf01d96de69c34031f6d2359f18
 
 </body>
 </html>
