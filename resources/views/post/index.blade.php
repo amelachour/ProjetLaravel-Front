@@ -171,6 +171,18 @@
         .show-more-comments:hover {
             text-decoration: underline;
         }
+
+        .filter-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-section label {
+            font-weight: bold;
+        }
     </style>
     <style>
         .modal-header-custom {
@@ -259,6 +271,40 @@
 
 
 <div class="container py-4">
+    <div class="filter-section">
+        <h5>Filtrer les Publications</h5>
+        <form id="filterForm">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="filterTitle" class="form-label">Titre</label>
+                    <input type="text" class="form-control" id="filterTitle" name="title">
+                </div>
+                <div class="col-md-4">
+                    <label for="filterAuthor" class="form-label">Auteur</label>
+                    <input type="text" class="form-control" id="filterAuthor" name="author">
+                </div>
+                <div class="col-md-4">
+                    <label for="filterLocation" class="form-label">Lieu</label>
+                    <input type="text" class="form-control" id="filterLocation" name="location">
+                </div>
+                <div class="col-md-4">
+                    <label for="filterDateFrom" class="form-label">Date de Début</label>
+                    <input type="date" class="form-control" id="filterDateFrom" name="date_from">
+                </div>
+                <div class="col-md-4">
+                    <label for="filterDateTo" class="form-label">Date de Fin</label>
+                    <input type="date" class="form-control" id="filterDateTo" name="date_to">
+                </div>
+                <div class="col-md-4 d-none">
+                    <label for="filterLikes" class="form-label">Nombre de J'aime Minimum</label>
+                    <input type="number" class="form-control" id="filterLikes" name="likes">
+                </div>
+            </div>
+            <div class="text-end mt-3">
+                <button type="button" class="btn btn-dark" onclick="applyFilters()">Appliquer les Filtres</button>
+            </div>
+        </form>
+    </div>
     <div class="button-center-wrapper">
         <button type="button" class="btn btn-new-post" data-bs-toggle="modal" data-bs-target="#formModal">
             Ajouter une nouvelle publication
@@ -902,6 +948,40 @@
         });
     }
 
+
+</script>
+<script>
+    function applyFilters() {
+        const title = $('#filterTitle').val().toLowerCase();
+        const author = $('#filterAuthor').val().toLowerCase();
+        const location = $('#filterLocation').val().toLowerCase();
+        const dateFrom = $('#filterDateFrom').val();
+        const dateTo = $('#filterDateTo').val();
+        const likes = $('#filterLikes').val();
+
+        $('.post-card').each(function () {
+            const postTitle = $(this).find('h5').text().toLowerCase();
+            const postAuthor = $(this).find('.d-flex.align-items-center h6').text().toLowerCase();
+            const postLocation = $(this).find('.fa-map-marker-alt').closest('p').text().toLowerCase();
+            const postDate = new Date($(this).find('.post-timestamp').text());
+            const postLikes = parseInt($(this).find('#likeCount-' + $(this).data('post-id')).text());
+
+            let matchesFilter = true;
+
+            if (title && !postTitle.includes(title)) matchesFilter = false;
+            if (author && !postAuthor.includes(author)) matchesFilter = false;
+            if (location && !postLocation.includes(location)) matchesFilter = false;
+            if (dateFrom && postDate < new Date(dateFrom)) matchesFilter = false;
+            if (dateTo && postDate > new Date(dateTo)) matchesFilter = false;
+            if (likes && postLikes < likes) matchesFilter = false;
+
+            if (matchesFilter) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
 </script>
 </body>
 </html>
