@@ -5,417 +5,418 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publications</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         body {
             background-color: #f9f9f9;
         }
 
         .post-card {
-            background-color: #fff;
-            border-radius: 10px;
+            max-width: 600px;
+            margin: 20px auto;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 5px solid #28a745;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-timestamp {
+            font-size: 0.8rem;
+            color: #666;
         }
 
         .post-media {
-            border-radius: 10px;
-            max-width: 100%;
             max-height: 400px;
             object-fit: cover;
-            display: block;
-            margin: 0 auto;
         }
 
-        /* Post Header */
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-top: 15px;
+        .interaction-button {
+            border: none;
+            background: none;
+            color: #555;
+            transition: color 0.2s;
         }
 
-        .post-header img {
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
+        .interaction-button:hover {
+            color: #0d6efd;
         }
 
-        .post-header .username {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 0;
+        .comment-input {
+            border-radius: 20px;
+            background-color: #f8f9fa;
         }
 
-        .post-header small {
-            color: gray;
+        .comment-section {
+            margin-top: 20px;
         }
 
-
-        .comments-btn {
-            background-color: #28a745;
-            color: white;
-            border-radius: 50px;
-            padding: 5px 15px;
-            text-decoration: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .comments-btn:hover {
-            background-color: #218838;
-        }
-
-        /* New Post Button */
         .btn-new-post {
-            background-color: #28a745;
-            color: white;
-            border-radius: 50px;
+            background-color: #0d6efd;
+            color: #fff;
+            border-radius: 30px;
             padding: 10px 20px;
-            margin-bottom: 20px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border: none;
         }
 
-
-        .post-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
+        .btn-new-post:hover {
+            background-color: #0b5ed7;
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
         }
 
-        .post-actions {
-            display: flex;
-            align-items: center;
+        .modal-content {
+            border-radius: 20px;
+            overflow: hidden;
         }
 
-        .post-actions i {
-            margin-right: 5px;
-        }
-
-
-        .modal-body {
+        .modal-header {
+            background-color: #0d6efd;
+            color: #fff;
+            border-bottom: none;
             padding: 20px;
         }
 
-        .modal-title {
-            font-size: 18px;
-            font-weight: bold;
+        .modal-body {
+            padding: 30px;
         }
 
-        .modal-body h6 {
-            margin-top: 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-bottom: 1px solid #e9ecef;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-
-        .modal-body form .form-control {
-            resize: none;
-            border-radius: 8px;
-        }
-
-        .modal-body form .btn {
-            background-color: #28a745;
+        .btn-close {
+            color: #fff;
+            font-size: 1.2rem;
             border: none;
-            color: white;
-            border-radius: 8px;
-            padding: 8px 16px;
+            background: none;
+            opacity: 1;
         }
 
-        .modal-body form .btn:hover {
-            background-color: #218838;
+        .btn-close:hover {
+            color: #f8f9fa;
         }
 
-        /* Comment List */
-        .list-group-item {
-            background-color: #f1f1f1;
+        .btn-dark {
+            background-color: #343a40;
+            color: #fff;
+            border-radius: 30px;
+            padding: 10px 20px;
+            transition: background-color 0.3s, box-shadow 0.3s;
             border: none;
+        }
+
+        .btn-dark:hover {
+            background-color: #23272b;
+            box-shadow: 0 4px 12px rgba(52, 58, 64, 0.4);
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
             border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .list-group-item strong {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
+        .upload-area:hover {
+            border-color: #0d6efd;
+            background: #f1f3f5;
         }
 
-        .comment-content {
-            font-size: 14px;
-            margin-bottom: 8px;
+        .preview-media {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+            border-radius: 4px;
         }
 
-        .comment-actions {
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            color: gray;
-        }
-
-        .comment-actions a {
-            text-decoration: none;
-            color: #28a745;
-            margin-right: 10px;
-        }
-
-        .comment-actions a:hover {
-            text-decoration: underline;
-        }
-
-        /* Comment Time */
-        .comment-time {
-            font-size: 12px;
-            color: gray;
-        }
-
-        /* Comment Like and Delete Hover Effects */
-        .comment-actions a:hover {
-            color: #218838;
-            text-decoration: none;
-        }
-
-        /* Modal Footer */
-        .modal-footer {
-            border-top: 1px solid #e9ecef;
-            padding-top: 15px;
-        }
-
-        .overlay-buttons {
+        .post-actions {
+            position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 10;
         }
 
+        .post-actions i {
+            cursor: pointer;
+            color: #555;
+            margin-left: 10px;
+            transition: color 0.2s;
+        }
+
+        .post-actions i:hover {
+            color: #0d6efd;
+        }
+
+        .show-more-comments {
+            color: #0d6efd;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .show-more-comments:hover {
+            text-decoration: underline;
+        }
 
     </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h1 class="text-center mb-5 text-green">Toutes les publications</h1>
+<div class="container py-4">
+    <button type="button" class="btn btn-new-post" data-bs-toggle="modal" data-bs-target="#formModal">
+        Ajouter une nouvelle publication
+    </button>
 
-
-    <div class="text-center">
-        <button class="btn btn-new-post" data-bs-toggle="modal" data-bs-target="#newPostModal">Ajouter une publication</button>
-    </div>
-
-    <div class="modal fade" id="newPostModal" tabindex="-1" aria-labelledby="newPostModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="newPostModalLabel">Nouvelle publication</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="newPostForm" enctype="multipart/form-data">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="postTitle" class="form-label">Titre</label>
-                            <input type="text" class="form-control" id="postTitle" name="title" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="postBody" class="form-label">Contenu</label>
-                            <textarea class="form-control" id="postBody" name="body" rows="4" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="postLocation" class="form-label">Lieu</label>
-                            <input type="text" class="form-control" id="postLocation" name="location" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="postMedia" class="form-label">Image ou Vidéo</label>
-                            <input type="file" class="form-control" id="postMedia" name="media" accept="image/*,video/*" required>
-                        </div>
-                        <button type="submit" class="btn btn-success">Publier</button>
-                    </form>
-                </div>
+    <!-- Displaying posts -->
+    @foreach($posts as $post)
+        <div class="post-card bg-white">
+            <!-- Post Actions (Edit/Delete) -->
+            <div class="post-actions">
+                <i class="fas fa-edit" onclick="openEditModal({{ json_encode($post) }})"></i>
+                <i class="fas fa-trash-alt" onclick="confirmDelete({{ $post->id }})"></i>
             </div>
-        </div>
-    </div>
 
-    <div class="container">
-        <div class="row">
-            @foreach($posts as $post)
-                <div class="col-md-6 mb-4">
-                    <div class="post-card position-relative">
-                        @if($post->media)
-                            <div class="media-container">
-                                @if($post->media->is_image)
-                                    <img src="{{ asset($post->media->path) }}" alt="image" class="post-media" width="1300px" height="953px">
-                                @else
-                                    <video class="post-media" controls autoplay muted loop style="width: 100%; height: auto;">
-                                        <source src="{{ asset($post->media->path) }}" type="video/mp4">
-                                        Your browser does not support video playback.
-                                    </video>
-                                @endif
-
-                                @if(auth()->id() == $post->user_id)
-                                    <div class="overlay-buttons position-absolute top-0 end-0 p-2">
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton-{{ $post->id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton-{{ $post->id }}">
-                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editPostModal-{{ $post->id }}">Edit</a></li>
-                                                <li><a class="dropdown-item text-danger" href="#" onclick="confirmDelete({{ $post->id }})">Delete</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                        @endif
-
-                        <div class="post-body mt-3">
-                            <h5>{{ $post->title }}</h5>
-                            <p>{{ $post->body }}</p>
-                            <p><i class="bi bi-geo-alt"></i> {{ $post->location ?? 'Location not specified' }}</p>
-                            <div class="post-footer">
-                                <div class="post-actions">
-                                    <i class="bi bi-hand-thumbs-up"></i> {{ $post->likes->count() }} J'aime
-                                </div>
-                                <a href="#" class="comments-btn" data-bs-toggle="modal" data-bs-target="#commentsModal-{{ $post->id }}">Commentaires ({{ $post->comments->count() }})</a>
-                            </div>
-                        </div>
-
-                            <div class="modal fade" id="commentsModal-{{ $post->id }}" tabindex="-1" aria-labelledby="commentsModalLabel-{{ $post->id }}" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="commentsModalLabel-{{ $post->id }}">{{ $post->title }}</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form id="commentForm-{{ $post->id }}" method="POST">
-                                                @csrf
-                                                <div class="mb-3">
-                                                    <label for="commentBody" class="form-label">Votre commentaire</label>
-                                                    <textarea class="form-control" name="comment" id="commentBody-{{ $post->id }}" rows="3" required></textarea>
-                                                </div>
-                                                <button type="submit" class="btn btn-success">Post Comment</button>
-                                            </form>
-
-                                            <h6>Commentaires</h6>
-                                            <ul class="list-group comment-list" id="commentList-{{ $post->id }}">
-                                                @foreach($post->comments as $comment)
-                                                    <li class="list-group-item" id="comment-{{ $comment->id }}">
-                                                        <strong>{{ $comment->user->name }}</strong>
-                                                        <div class="comment-content">{{ $comment->comment }}</div>
-                                                        <div class="comment-actions">
-                                                            <a href="#" class="delete-comment" data-id="{{ $comment->id }}">Delete</a>
-                                                            <span class="comment-time">{{ $comment->created_at->diffForHumans() }}</span>
-                                                        </div>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal fade" id="editPostModal-{{ $post->id }}" tabindex="-1" aria-labelledby="editPostModalLabel-{{ $post->id }}" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editPostModalLabel-{{ $post->id }}">Modifier le Poste</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form id="editPostForm-{{ $post->id }}" enctype="multipart/form-data">
-                                                @csrf
-                                                <input type="hidden" name="_method" value="PATCH">
-                                                <div class="mb-3">
-                                                    <label for="title" class="form-label">Titre</label>
-                                                    <input type="text" class="form-control" name="title" value="{{ $post->title }}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="body" class="form-label">Contenu</label>
-                                                    <textarea class="form-control" name="body" rows="4" required>{{ $post->body }}</textarea>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="location" class="form-label">Lieu</label>
-                                                    <input type="text" class="form-control" name="location" value="{{ $post->location }}">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="media" class="form-label">Image ou Vidéo</label>
-                                                    <input type="file" class="form-control" name="media" accept="image/*,video/*">
-                                                    <small>Actuel: {{ $post->media->path ?? 'Pas de média' }}</small>
-                                                </div>
-                                                <button type="submit" class="btn btn-success">Mettre à jour</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+            <!-- Post Header -->
+            <div class="p-3 border-bottom">
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('images/placeholder-avatar.png') }}" alt="User Avatar" class="user-avatar me-2">
+                    <div>
+                        <h6 class="mb-0">{{ $post->user->name }}</h6>
+                        <small class="post-timestamp">{{ $post->created_at }}</small>
                     </div>
                 </div>
-            @endforeach
+            </div>
+
+            <!-- Post Media -->
+            @if($post->media)
+                @if($post->media->is_image)
+                    <img src="{{ asset($post->media->path) }}" alt="Image" class="w-100 post-media">
+                @else
+                    <video class="w-100 post-media" controls>
+                        <source src="{{ asset($post->media->path) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                @endif
+            @else
+                <!-- Fallback image when no media is available -->
+                <img src="{{ asset('images/fallback-image.png') }}" alt="Fallback Image" class="w-100 post-media">
+            @endif
+
+            <!-- Post Content -->
+            <div class="p-3">
+                <h5 class="mb-2">{{ $post->title }}</h5>
+                <p class="mb-3">{{ $post->body }}</p>
+                <p><i class="fas fa-map-marker-alt"></i> {{ $post->location ?? 'Location not specified' }}</p>
+            </div>
+
+            <!-- Interaction Stats -->
+            <div class="px-3 py-2 border-top border-bottom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-heart text-danger"></i>
+                        <span class="ms-1">{{ $post->likes->count() }} J'aime</span>
+                    </div>
+                    <div>
+                        <span>{{ $post->comments->count() }} Commentaires</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interaction Buttons -->
+            <div class="d-flex justify-content-around p-2 border-bottom">
+                <button class="interaction-button p-2 flex-grow-1">
+                    <i class="fas fa-heart me-2"></i>Like
+                </button>
+                <button class="interaction-button p-2 flex-grow-1" data-bs-toggle="modal"
+                        data-bs-target="#commentsModal-{{ $post->id }}">
+                    <i class="fas fa-comment me-2"></i>Comment
+                </button>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="p-3 comment-section" data-post-id="{{ $post->id }}">
+                @foreach($post->comments as $index => $comment)
+                    <div class="d-flex mb-3 comment-item" data-comment-id="{{ $comment->id }}">
+                        <img src="{{ asset('images/placeholder-avatar.png') }}" alt="User Avatar" class="user-avatar me-2" style="width: 32px; height: 32px;">
+                        <div class="bg-light p-2 rounded flex-grow-1" style="display: inline-block;">
+                            <h6 class="mb-1">{{ $comment->user->name }}</h6>
+                            <p class="mb-0 comment-text" id="commentText-{{ $comment->id }}">{{ $comment->comment }}</p>
+                            <textarea class="form-control d-none" id="commentContent-{{ $comment->id }}">{{ $comment->comment }}</textarea>
+                            <div class="comment-actions mt-1">
+                                <i class="fas fa-edit text-primary edit-comment" onclick="enableCommentEdit({{ $comment->id }})" style="cursor: pointer;"></i>
+                                <i class="fas fa-trash-alt text-danger ms-2 delete-comment" onclick="deleteComment({{ $comment->id }})" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                @endforeach
+
+                @if($post->comments->count() > 3)
+                    <div class="text-center mt-3">
+                        <button class="btn btn-link show-more-comments" data-post-id="{{ $post->id }}" onclick="toggleComments({{ $post->id }})">
+                            <i class="fas fa-chevron-down"></i> Show More
+                        </button>
+                    </div>
+                @endif
+
+                <!-- Comment Input -->
+                <div class="d-flex align-items-center mt-3">
+                    <img src="{{ asset('images/placeholder-avatar.png') }}" alt="Your Avatar" class="user-avatar me-2" style="width: 32px; height: 32px;">
+                    <input type="text" id="newCommentInput-{{ $post->id }}" class="form-control comment-input" placeholder="Write a comment..." onkeypress="handleCommentInput(event, {{ $post->id }})">
+                </div>
+            </div>
+
+
+
         </div>
-    </div>
-
-
-
+    @endforeach
 
 </div>
-<!-- Edit Post Modal -->
-<div class="modal fade" id="editPostModal-{{ $post->id }}" tabindex="-1" aria-labelledby="editPostModalLabel-{{ $post->id }}" aria-hidden="true">
-    <div class="modal-dialog">
+
+<!-- Modal for creating a new post -->
+<div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editPostModalLabel-{{ $post->id }}">Edit Post</h5>
+                <h5 class="modal-title" id="formModalLabel">Ajouter une nouvelle publication</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editPostForm-{{ $post->id }}" enctype="multipart/form-data">
+                <form id="contentForm" action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="_method" value="PATCH">
                     <div class="mb-3">
-                        <label for="editPostTitle-{{ $post->id }}" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="editPostTitle-{{ $post->id }}" name="title" value="{{ $post->title }}" required>
+                        <label for="title" class="form-label">Titre</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
                     </div>
+
                     <div class="mb-3">
-                        <label for="editPostBody-{{ $post->id }}" class="form-label">Content</label>
-                        <textarea class="form-control" id="editPostBody-{{ $post->id }}" name="body" rows="4" required>{{ $post->body }}</textarea>
+                        <label for="body" class="form-label">Contenu</label>
+                        <textarea class="form-control" id="body" name="body" rows="3" required></textarea>
                     </div>
+
                     <div class="mb-3">
-                        <label for="editPostLocation-{{ $post->id }}" class="form-label">Location</label>
-                        <input type="text" class="form-control" id="editPostLocation-{{ $post->id }}" name="location" value="{{ $post->location }}">
+                        <label for="location" class="form-label">Lieu</label>
+                        <input type="text" class="form-control" id="location" name="location">
                     </div>
+
                     <div class="mb-3">
-                        <label for="editPostMedia-{{ $post->id }}" class="form-label">Image or Video</label>
-                        <input type="file" class="form-control" id="editPostMedia-{{ $post->id }}" name="media" accept="image/*,video/*">
-                        <small>Current: {{ $post->media->path ?? 'No media' }}</small>
+                        <label class="form-label">Upload Media (Image/Video)</label>
+                        <div class="upload-area" id="mediaUpload">
+                            <input type="file" class="form-control" id="mediaInput" name="media" accept="image/*, video/*">
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-success">Update Post</button>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" form="contentForm" class="btn btn-primary">Publier</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for editing a post -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Modifier la publication</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PATCH')
+                    <input type="hidden" id="editPostId" name="post_id">
+
+                    <div class="mb-3">
+                        <label for="editTitle" class="form-label">Titre</label>
+                        <input type="text" class="form-control" id="editTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editBody" class="form-label">Contenu</label>
+                        <textarea class="form-control" id="editBody" name="body" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editLocation" class="form-label">Lieu</label>
+                        <input type="text" class="form-control" id="editLocation" name="location">
+                    </div>
+                    <!-- Media Input -->
+                    <div class="mb-3">
+                        <label class="form-label">Upload Media (Image/Video)</label>
+                        <div class="upload-area" id="editMediaUpload">
+                            <input type="file" class="d-none" id="editMediaInput" name="media" accept="image/*, video/*">
+                            <div id="editMediaPreview"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" form="editForm" class="btn btn-primary">Sauvegarder les modifications</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    $('#newPostForm').on('submit', function(e) {
-        e.preventDefault();
+    // Handle media upload area click for adding media
+    document.getElementById('mediaUpload').addEventListener('click', () => {
+        document.getElementById('mediaInput').click();
+    });
 
-        var formData = new FormData(this);
+    // Handle media preview for adding media
+    document.getElementById('mediaInput').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('mediaPreview');
+                if (file.type.startsWith('image/')) {
+                    preview.innerHTML = `<img src="${e.target.result}" class="preview-media">`;
+                } else if (file.type.startsWith('video/')) {
+                    preview.innerHTML = `<video controls class="preview-media"><source src="${e.target.result}"></video>`;
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Open the edit modal and fill it with post data
+    function openEditModal(post) {
+        $('#editPostId').val(post.id);
+        $('#editTitle').val(post.title);
+        $('#editBody').val(post.body);
+        $('#editLocation').val(post.location);
+        if (post.media) {
+            const preview = $('#editMediaPreview');
+            if (post.media.is_image) {
+                preview.html(`<img src="/${post.media.path}" class="preview-media">`);
+            } else {
+                preview.html(`<video controls class="preview-media"><source src="/${post.media.path}"></video>`);
+            }
+        } else {
+            $('#editMediaPreview').html('');
+        }
+        $('#editModal').modal('show');
+    }
+
+    $('#contentForm').on('submit', function(e) {
+        e.preventDefault();
+        let formData = new FormData(this);
 
         $.ajax({
             url: "{{ route('posts.store') }}",
@@ -424,199 +425,242 @@
             contentType: false,
             processData: false,
             success: function(response) {
-                $('#newPostModal').modal('hide');
-                Swal.fire({
-                    title: 'Succès!',
-                    text: 'Votre publication a été ajoutée avec succès!',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
+                $('#formModal').modal('hide');
+                Swal.fire('Succès!', response.message, 'success').then(() => {
+                    location.reload(); // Reload the page to reflect the new post
                 });
-
-                location.reload();
             },
-            error: function(error) {
-                Swal.fire({
-                    title: 'Erreur!',
-                    text: 'Il y a eu un problème lors de l\'ajout de la publication.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
+            error: function(xhr) {
+                let errorText = 'Il y a eu un problème lors de la création de la publication.';
+                if (xhr.status === 422) {
+                    const errors = xhr.responseJSON.errors;
+                    errorText = Object.values(errors).flat().join('<br>');
+                }
+                Swal.fire('Erreur!', errorText, 'error');
             }
         });
     });
-</script>
-<script>
-    $(document).ready(function() {
-        @foreach($posts as $post)
-        $('#commentForm-{{ $post->id }}').on('submit', function(e) {
-            e.preventDefault();
 
-            var formData = {
-                comment: $('#commentBody-{{ $post->id }}').val(),
-                _token: $('input[name=_token]').val() // CSRF Token
-            };
+    // Handle edit form submission
+    $('#editForm').on('submit', function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        var postId = $('#editPostId').val();
 
-            $.ajax({
-                type: 'POST',
-                url: '{{ route("comments.store", $post->id) }}',
-                data: formData,
-                success: function(response) {
-
-                    $('#commentList-{{ $post->id }}').prepend(`
-                    <li class="list-group-item" id="comment-${response.comment_id}">
-                        <strong>${response.user}</strong>
-                        <div class="comment-content">${response.comment}</div>
-                        <div class="comment-actions">
-                            <a href="#" class="delete-comment" data-id="${response.comment_id}">Delete</a>
-                            <span class="comment-time">Just now</span>
-                        </div>
-                    </li>
-                `);
-
-
-                    $('#commentBody-{{ $post->id }}').val('');
-                },
-                error: function(error) {
-                    console.log(error);
-                    alert('There was an error posting your comment.');
+        $.ajax({
+            url: `/posts/${postId}`,
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'X-HTTP-Method-Override': 'PATCH' // Override POST to PATCH
+            },
+            success: function (response) {
+                $('#editModal').modal('hide');
+                Swal.fire('Succès!', response.message, 'success').then(() => { location.reload(); });
+            },
+            error: function (xhr) {
+                let errorText = 'Il y a eu un problème lors de la mise à jour de la publication.';
+                if (xhr.status === 422) {
+                    const errors = xhr.responseJSON.error;
+                    errorText = Object.values(errors).flat().join('<br>');
                 }
-            });
-        });
-
-        $(document).on('click', '.delete-comment', function(e) {
-            e.preventDefault();
-            var commentId = $(this).data('id');
-            console.log('Comment ID:', commentId);
-
-
-            var token = $('meta[name="csrf-token"]').attr('content');
-
-            $.ajax({
-                type: 'DELETE',
-                url: '{{ route("comments.destroy", ":id") }}'.replace(':id', commentId), // Use route name with dynamic ID
-                data: {
-                    _token: token
-                },
-                success: function(response) {
-
-                    $('#comment-' + commentId).remove();
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                    alert('There was an error deleting your comment.');
-                }
-            });
-        });
-        @endforeach
-    });
-
-
-</script>
-<script>
-
-    $('#newPostModal').on('shown.bs.modal', function () {
-
-        $('#newPostForm')[0].reset();
-
-        $('#postMedia').val('');
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('form[id^="editPostForm-"]').on('submit', function(e) {
-            e.preventDefault();
-            var formId = $(this).attr('id');
-            var postId = formId.split('-').pop();
-            var formData = new FormData(this);
-
-            $.ajax({
-                url: "{{ url('posts') }}/" + postId,
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    $('#editPostModal-' + postId).modal('hide');
-                    Swal.fire('Updated!', 'Your post has been updated successfully.', 'success');
-                    location.reload();
-                },
-                error: function(response) {
-                    Swal.fire('Error!', 'Failed to update the post.', 'error');
-                }
-            });
+                Swal.fire('Erreur!', errorText, 'error');
+            }
         });
     });
-</script>
 
-<script>
-    $(document).ready(function() {
-        $('form[id^="editPostForm-"]').on('submit', function(e) {
-            e.preventDefault();
-            var formId = $(this).attr('id');
-            var postId = formId.split('-').pop();
-            var formData = new FormData(this);
-
-            $.ajax({
-                url: "/posts/" + postId,
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                    'X-HTTP-Method-Override': 'PATCH'
-                },
-                success: function(response) {
-                    $('#editPostModal-' + postId).modal('hide');
-                    location.reload()                },
-                error: function(xhr) { // Handle errors
-                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.error : 'Something went wrong!'; // Adjust based on your response structure
-                    location.reload()                }
-            });
-        });
-    });
-</script>
-
-<script>
-    var deletePostUrl = "{{ route('posts.destroy', ['post' => ':id']) }}";
+    // Confirm delete post
     function confirmDelete(postId) {
         Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            title: 'Êtes-vous sûr?',
+            text: "Voulez-vous vraiment supprimer cette publication?",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, supprimer!',
+            cancelButtonText: 'Annuler'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: deletePostUrl.replace(':id', postId),
-                    type: 'DELETE',
+                    url: `/posts/${postId}`,
+                    type: "DELETE",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response) {
-                        Swal.fire(
-                            'Deleted!',
-                            'Your post has been deleted.',
-                            'success'
-                        );
-                        location.reload();
+                    success: function (response) {
+                        Swal.fire('Supprimé!', response.message, 'success').then(() => { location.reload(); });
                     },
-                    error: function() {
-                        Swal.fire(
-                            'Failed!',
-                            'There was an error deleting the post.',
-                            'error'
-                        );
+                    error: function () {
+                        Swal.fire('Erreur!', 'Il y a eu un problème lors de la suppression de la publication.', 'error');
                     }
                 });
             }
         });
     }
 </script>
+<script>
+    // Handle adding comments in real time
+    // Handle adding comments in real time
+    function handleCommentInput(event, postId) {
+        if (event.key === 'Enter') {
+            let comment = event.target.value.trim();
+            if (comment !== "") {
+                $.ajax({
+                    url: "{{ route('comments.store', '') }}/" + postId,
+                    type: "POST",
+                    data: {
+                        comment: comment,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        // Append new comment to the comment section
+                        let newCommentHtml = `
+                        <div class="d-flex mb-3 comment-item" data-comment-id="${response.comment_id}">
+                            <img src="{{ asset('images/placeholder-avatar.png') }}" alt="User Avatar" class="user-avatar me-2" style="width: 32px; height: 32px;">
+                            <div class="bg-light p-2 rounded flex-grow-1" style="display: inline-block;">
+                                <h6 class="mb-1">${response.user}</h6>
+                                <p class="mb-0 comment-text" id="commentText-${response.comment_id}">${response.comment}</p>
+                                <textarea class="form-control d-none" id="commentContent-${response.comment_id}">${response.comment}</textarea>
+                                <div class="comment-actions mt-1">
+                                    <i class="fas fa-edit text-primary edit-comment" onclick="enableCommentEdit(${response.comment_id})" style="cursor: pointer;"></i>
+                                    <i class="fas fa-trash-alt text-danger ms-2 delete-comment" onclick="deleteComment(${response.comment_id})" style="cursor: pointer;"></i>
+                                </div>
+                            </div>
+                        </div>`;
+                        $(event.target).closest('.comment-section').find('.d-flex.align-items-center').before(newCommentHtml);
+                        event.target.value = ""; // Clear input field after adding the comment
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Erreur!', 'Impossible d\'ajouter le commentaire.', 'error');
+                    }
+                });
+            }
+        }
+    }
+
+    // Handle editing comments
+    function updateComment(commentId) {
+        const newCommentContent = $(`#commentContent-${commentId}`).val().trim();
+
+        if (newCommentContent !== "") {
+            $.ajax({
+                url: `/comments/${commentId}`, // Use the correct URI pattern for comments update route
+                type: "PATCH",
+                data: {
+                    comment: newCommentContent,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    // Update the comment display after successful update
+                    const commentText = $(`#commentText-${commentId}`);
+                    const commentContent = $(`#commentContent-${commentId}`);
+
+                    commentText.text(response.comment);
+                    commentText.show();
+                    commentContent.addClass('d-none');
+
+                    Swal.fire('Succès!', 'Commentaire mis à jour avec succès.', 'success');
+                },
+                error: function(xhr) {
+                    let errorText = 'Il y a eu un problème lors de la mise à jour du commentaire.';
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+                        errorText = Object.values(errors).flat().join('<br>');
+                    }
+                    Swal.fire('Erreur!', errorText, 'error');
+                }
+            });
+        } else {
+            Swal.fire('Erreur!', 'Le contenu du commentaire ne peut pas être vide.', 'error');
+        }
+    }    // Handle deleting comments
+    function deleteComment(commentId) {
+        Swal.fire({
+            title: 'Êtes-vous sûr?',
+            text: "Voulez-vous vraiment supprimer ce commentaire?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, supprimer!',
+            cancelButtonText: 'Annuler'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/comments/${commentId}`, // Use the dynamic comment ID directly
+                    type: "DELETE",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        $(`[data-comment-id="${commentId}"]`).remove(); // Remove comment from DOM
+                        Swal.fire('Supprimé!', response.message, 'success');
+                    },
+                    error: function() {
+                        Swal.fire('Erreur!', 'Impossible de supprimer le commentaire.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+    // Enable editing for a comment
+</script>
+
+<script>
+    function enableCommentEdit(commentId) {
+        // Toggle between displaying comment text and textarea for editing
+        const commentText = $(`#commentText-${commentId}`);
+        const commentContent = $(`#commentContent-${commentId}`);
+
+        if (commentText.is(":visible")) {
+            commentText.hide();
+            commentContent.removeClass('d-none').focus();
+
+            // Add an event listener for pressing "Enter" while editing
+            commentContent.on('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent adding a new line
+                    updateComment(commentId);
+                }
+            });
+
+            // Alternatively save the comment when the user clicks outside (blur event)
+            commentContent.on('blur', function() {
+                updateComment(commentId);
+            });
+        } else {
+            commentText.show();
+            commentContent.addClass('d-none');
+        }
+    }    function toggleComments(postId) {
+
+
+        // Find the button clicked and the corresponding comments for the post
+        const button = $(`.show-more-comments[data-post-id="${postId}"]`);
+        const comments = $(`.comment-section[data-post-id="${postId}"] .comment-item`);
+
+        if (button.text().trim().includes("Show More")) {
+            // Show all comments
+            comments.removeClass('d-none');
+            button.html('<i class="fas fa-chevron-up"></i> Show Less');
+        } else {
+            // Hide all comments except the first 3
+            comments.each((index, comment) => {
+                if (index >= 3) {
+                    $(comment).addClass('d-none');
+                }
+            });
+            button.html('<i class="fas fa-chevron-down"></i> Show More');
+        }
+    }
+
+</script>
+
 
 </body>
 </html>
-
