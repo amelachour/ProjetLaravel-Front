@@ -76,11 +76,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts_list', [PostController::class, 'index'])->name('posts.index');
     Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::patch('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::post('/comments/{post}', [CommentController::class, 'store'])->name('comments.store');
     Route::patch('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
-
-
+    Route::post('/posts/{post}/like', [PostController::class, 'like'])->name('posts.like');
+    Route::delete('/posts/{post}/unlike', [PostController::class, 'unlike'])->name('posts.unlike');
+    Route::get('/posts/{post}/likes', [PostController::class, 'getLikes'])->name('posts.likes');
 
 });
 

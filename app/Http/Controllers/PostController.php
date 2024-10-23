@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use App\Models\Media;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -148,6 +149,57 @@ class PostController extends Controller
             Log::error('Error deleting post: ' . $e->getMessage());
             return response()->json(['error' => 'Error deleting the post'], 500);
         }
+    }
+
+    public function like(Post $post)
+    {
+        $like = Like::firstOrCreate([
+            'post_id' => $post->id,
+            'user_id' => auth()->id(),
+        ]);
+
+        return response()->json(['message' => 'Liked successfully', 'like_count' => $post->likes()->count()]);
+    }
+
+    public function unlike(Post $post)
+    {
+        $like = Like::where([
+            'post_id' => $post->id,
+            'user_id' => auth()->id(),
+        ])->first();
+
+        if ($like) {
+            $like->delete();
+        }
+
+        return response()->json(['message' => 'Unliked successfully', 'like_count' => $post->likes()->count()]);
+    }
+
+    public function getLikes(Post $post)
+    {
+        $likes = $post->likes()->with('user')->get();
+
+        $likeDetails = $likes->map(function ($like) {
+            return [
+                'user_name' => $like->user->name,
+                'user_avatar' => $like->user->avatar ? asset('storage/' . $like->user->avatar) : asset('images/placeholder-avatar.png')
+            ];
+        });
+
+        $comments = $post->comments()->with('user')->get();
+
+        $commentDetails = $comments->map(function ($comment) {
+            return [
+                'user_name' => $comment->user->name,
+                'user_avatar' => $comment->user->avatar ? asset('storage/' . $comment->user->avatar) : asset('images/placeholder-avatar.png'),
+                'comment' => $comment->comment
+            ];
+        });
+
+        return response()->json([
+            'likes' => $likeDetails,
+            'comments' => $commentDetails,
+        ]);
     }
 
 }
