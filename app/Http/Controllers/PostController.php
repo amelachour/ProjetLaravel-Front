@@ -19,14 +19,16 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-
         try {
+            // Validate the request data
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
-                'body' => 'required|string',
+                'body' => 'required|string', // Matches 'body' input from the form
                 'location' => 'nullable|string|max:255',
+                'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi|max:10240', // Add validation for media
             ]);
 
+            // Create a new post
             $post = Post::create([
                 'user_id' => auth()->id(),
                 'title' => $validatedData['title'],
@@ -34,13 +36,16 @@ class PostController extends Controller
                 'location' => $validatedData['location'],
             ]);
 
+            // Handle the media file, if it exists
             if ($request->hasFile('media') && $request->file('media')->isValid()) {
                 $file = $request->file('media');
                 $fileName = time() . '_' . $file->getClientOriginalName();
-
                 $filePath = $file->move(public_path('posts'), $fileName);
 
+                // Determine if the uploaded file is an image
                 $isImage = in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif']);
+
+                // Save media details
                 Media::create([
                     'post_id' => $post->id,
                     'path' => 'posts/' . $fileName,
@@ -48,28 +53,29 @@ class PostController extends Controller
                 ]);
             }
 
+            // Return success response
             return response()->json([
                 'message' => 'Post created successfully',
                 'post_id' => $post->id
             ]);
 
         } catch (\Exception $e) {
-
+            // Log error details for debugging
             Log::error('Error creating post: ' . $e->getMessage(), [
                 'exception' => $e,
                 'request_data' => $request->all(),
                 'user_id' => auth()->id(),
             ]);
-            return response()->json(['error' => $e->getMessage()], 500);
 
+            // Return error response
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
     public function update(Request $request, $id)
     {
         try {
-            $post = Post::findOrFail($id);
-
+            Log::info('Request data for update:', $request->all()); // Log all incoming request data
 
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
@@ -77,6 +83,7 @@ class PostController extends Controller
                 'location' => 'nullable|string|max:255',
             ]);
 
+            $post = Post::findOrFail($id);
 
             $post->update([
                 'title' => $validatedData['title'],
@@ -84,24 +91,23 @@ class PostController extends Controller
                 'location' => $validatedData['location'],
             ]);
 
-
             if ($request->hasFile('media') && $request->file('media')->isValid()) {
                 $file = $request->file('media');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $filePath = $file->move(public_path('posts'), $fileName);
 
-
                 $isImage = in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif']);
 
-                $existingMedia = $post->media;
-                if ($existingMedia) {
+                if ($post->media) {
+                    if (file_exists(public_path($post->media->path))) {
+                        unlink(public_path($post->media->path));
+                    }
 
-                    $existingMedia->update([
+                    $post->media->update([
                         'path' => 'posts/' . $fileName,
                         'is_image' => $isImage,
                     ]);
                 } else {
-
                     Media::create([
                         'post_id' => $post->id,
                         'path' => 'posts/' . $fileName,
@@ -111,14 +117,16 @@ class PostController extends Controller
             }
 
             return response()->json(['message' => 'Post updated successfully'], 200);
-
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 422);
         } catch (\Exception $e) {
             Log::error('Error updating post: ' . $e->getMessage(), [
                 'exception' => $e,
                 'request_data' => $request->all(),
                 'user_id' => auth()->id(),
             ]);
-            return response()->json(['error' => $e->getMessage()], 500);
+
+            return response()->json(['error' => 'Error updating the post'], 500);
         }
     }
 
