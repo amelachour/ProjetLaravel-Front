@@ -40,4 +40,18 @@ class CommentController extends Controller
         }
     }
 
+    public function update(Request $request, Comment $comment)
+    {
+        $request->validate([
+            'comment' => 'required|string|max:500',
+        ]);
+
+        $comment->update([
+            'comment' => $request->comment,
+        ]);
+
+        return response()->json(['message' => 'Comment updated successfully'], 200);
+    }
+
+
 }

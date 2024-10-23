@@ -75,34 +75,34 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            Log::info('Request data for update:', $request->all()); // Log all incoming request data
-
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
                 'body' => 'required|string',
                 'location' => 'nullable|string|max:255',
+                'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi|max:10240'
             ]);
 
             $post = Post::findOrFail($id);
 
+            // Update Post details
             $post->update([
                 'title' => $validatedData['title'],
                 'body' => $validatedData['body'],
                 'location' => $validatedData['location'],
             ]);
 
+            // Handle Media
             if ($request->hasFile('media') && $request->file('media')->isValid()) {
                 $file = $request->file('media');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $filePath = $file->move(public_path('posts'), $fileName);
-
                 $isImage = in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif']);
 
                 if ($post->media) {
+                    // Delete old media if exists
                     if (file_exists(public_path($post->media->path))) {
                         unlink(public_path($post->media->path));
                     }
-
                     $post->media->update([
                         'path' => 'posts/' . $fileName,
                         'is_image' => $isImage,
