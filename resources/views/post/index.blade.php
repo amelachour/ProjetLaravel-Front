@@ -11,7 +11,11 @@
 
     <style>
         body {
-            background-color: #f9f9f9;
+            background-color: #b6d7a8; /* Updated background color */
+        }
+
+        .navbar {
+            background-color: #b6d7a8 !important; /* Updated navbar color */
         }
 
         .post-card {
@@ -49,7 +53,7 @@
         }
 
         .interaction-button:hover {
-            color: #0d6efd;
+            color: #345c12;
         }
 
         .comment-input {
@@ -62,17 +66,18 @@
         }
 
         .btn-new-post {
-            background-color: #0d6efd;
+            background-color: #345c12;
             color: #fff;
             border-radius: 30px;
             padding: 10px 20px;
             transition: background-color 0.3s, box-shadow 0.3s;
             border: none;
+
         }
 
         .btn-new-post:hover {
-            background-color: #0b5ed7;
-            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+            background-color: #345c12;
+            box-shadow: 0 4px 12px rgba(128, 189, 90, 0.4);
         }
 
         .modal-content {
@@ -81,7 +86,7 @@
         }
 
         .modal-header {
-            background-color: #0d6efd;
+            background-color: #345c12;
             color: #fff;
             border-bottom: none;
             padding: 20px;
@@ -128,7 +133,7 @@
         }
 
         .upload-area:hover {
-            border-color: #0d6efd;
+            border-color: #345c12;
             background: #f1f3f5;
         }
 
@@ -153,11 +158,11 @@
         }
 
         .post-actions i:hover {
-            color: #0d6efd;
+            color: #345c12;
         }
 
         .show-more-comments {
-            color: #0d6efd;
+            color: #345c12;
             font-weight: bold;
             cursor: pointer;
             text-decoration: none;
@@ -166,7 +171,6 @@
         .show-more-comments:hover {
             text-decoration: underline;
         }
-
     </style>
     <style>
         .modal-header-custom {
@@ -187,13 +191,79 @@
             top: 1rem;
         }
     </style>
+    <style>
+        .button-center-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+    </style>
 
 </head>
 <body>
+
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand" href="#">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" style="height: 80px;">
+        </a>
+
+        <!-- Navbar Toggle for Mobile View -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item current">
+                    <a href="{{ route('home') }}" class="nav-link text-dark smoothscroll">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ asset('#about') }}" class="nav-link text-dark smoothscroll">Centres</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('disposalRecords.index') }}" class="nav-link text-dark">Suivi</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('wastes.index') }}" class="nav-link text-dark">Déchets</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('posts.index') }}" target="_blank" class="nav-link text-dark">Articles</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ asset('#download') }}" class="nav-link text-dark smoothscroll">Contactez Nous</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="d-flex align-items-center">
+            @if(auth()->check())
+                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-dark ms-3">Déconnecter</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-outline-dark ms-3">Se Connecter</a>
+            @endif
+        </div>
+    </div>
+</nav>
+
+
+
+
 <div class="container py-4">
-    <button type="button" class="btn btn-new-post" data-bs-toggle="modal" data-bs-target="#formModal">
-        Ajouter une nouvelle publication
-    </button>
+    <div class="button-center-wrapper">
+        <button type="button" class="btn btn-new-post" data-bs-toggle="modal" data-bs-target="#formModal">
+            Ajouter une nouvelle publication
+        </button>
+    </div>
 
     <!-- Displaying posts -->
     @foreach($posts as $post)
@@ -243,7 +313,8 @@
                     <div>
                         <i class="fas fa-heart text-danger"></i>
                         <span id="likeCount-{{ $post->id }}" class="ms-1">{{ $post->likes->count() }} J'aime</span>
-                        <button class="btn btn-link p-0 m-0 text-decoration-none" onclick="viewAllDetails({{ $post->id }})">
+                        <button class="btn btn-link p-0 m-0 text-decoration-none"
+                                onclick="viewAllDetails({{ $post->id }})">
                             <span style="font-size: 15px">View all</span>
                         </button>
                     </div>
@@ -256,8 +327,9 @@
 
             <!-- Interaction Buttons -->
             <div class="d-flex justify-content-around p-2 border-bottom">
-                <button class="interaction-button like-button p-2 flex-grow-1 @if($post->likes->contains('user_id', auth()->id())) liked @endif"
-                        data-post-id="{{ $post->id }}">
+                <button
+                    class="interaction-button like-button p-2 flex-grow-1 @if($post->likes->contains('user_id', auth()->id())) liked @endif"
+                    data-post-id="{{ $post->id }}">
                     @if($post->likes->contains('user_id', auth()->id()))
                         <i class="fas fa-heart text-danger me-2"></i>Unlike
                     @else
@@ -275,14 +347,18 @@
             <div class="p-3 comment-section" data-post-id="{{ $post->id }}">
                 @foreach($post->comments as $index => $comment)
                     <div class="d-flex mb-3 comment-item" data-comment-id="{{ $comment->id }}">
-                        <img src="{{ asset('images/placeholder-avatar.png') }}" alt="User Avatar" class="user-avatar me-2" style="width: 32px; height: 32px;">
+                        <img src="{{ asset('images/placeholder-avatar.png') }}" alt="User Avatar"
+                             class="user-avatar me-2" style="width: 32px; height: 32px;">
                         <div class="bg-light p-2 rounded flex-grow-1" style="display: inline-block;">
                             <h6 class="mb-1">{{ $comment->user->name }}</h6>
                             <p class="mb-0 comment-text" id="commentText-{{ $comment->id }}">{{ $comment->comment }}</p>
-                            <textarea class="form-control d-none" id="commentContent-{{ $comment->id }}">{{ $comment->comment }}</textarea>
+                            <textarea class="form-control d-none"
+                                      id="commentContent-{{ $comment->id }}">{{ $comment->comment }}</textarea>
                             <div class="comment-actions mt-1">
-                                <i class="fas fa-edit text-primary edit-comment" onclick="enableCommentEdit({{ $comment->id }})" style="cursor: pointer;"></i>
-                                <i class="fas fa-trash-alt text-danger ms-2 delete-comment" onclick="deleteComment({{ $comment->id }})" style="cursor: pointer;"></i>
+                                <i class="fas fa-edit text-primary edit-comment"
+                                   onclick="enableCommentEdit({{ $comment->id }})" style="cursor: pointer;"></i>
+                                <i class="fas fa-trash-alt text-danger ms-2 delete-comment"
+                                   onclick="deleteComment({{ $comment->id }})" style="cursor: pointer;"></i>
                             </div>
                         </div>
                     </div>
@@ -291,7 +367,8 @@
 
                 @if($post->comments->count() > 3)
                     <div class="text-center mt-3">
-                        <button class="btn btn-link show-more-comments" data-post-id="{{ $post->id }}" onclick="toggleComments({{ $post->id }})">
+                        <button class="btn btn-link show-more-comments" data-post-id="{{ $post->id }}"
+                                onclick="toggleComments({{ $post->id }})">
                             <i class="fas fa-chevron-down"></i> Show More
                         </button>
                     </div>
@@ -299,18 +376,18 @@
 
                 <!-- Comment Input -->
                 <div class="d-flex align-items-center mt-3">
-                    <img src="{{ asset('images/placeholder-avatar.png') }}" alt="Your Avatar" class="user-avatar me-2" style="width: 32px; height: 32px;">
-                    <input type="text" id="newCommentInput-{{ $post->id }}" class="form-control comment-input" placeholder="Write a comment..." onkeypress="handleCommentInput(event, {{ $post->id }})">
+                    <img src="{{ asset('images/placeholder-avatar.png') }}" alt="Your Avatar" class="user-avatar me-2"
+                         style="width: 32px; height: 32px;">
+                    <input type="text" id="newCommentInput-{{ $post->id }}" class="form-control comment-input"
+                           placeholder="Write a comment..." onkeypress="handleCommentInput(event, {{ $post->id }})">
                 </div>
             </div>
-
 
 
         </div>
     @endforeach
 
 </div>
-
 
 
 <!-- Modal for creating a new post -->
@@ -344,7 +421,8 @@
                     <div class="mb-3">
                         <label class="form-label">Upload Media (Image/Video)</label>
                         <div class="upload-area" id="mediaUpload">
-                            <input type="file" class="form-control" id="mediaInput" name="media" accept="image/*, video/*">
+                            <input type="file" class="form-control" id="mediaInput" name="media"
+                                   accept="image/*, video/*">
                         </div>
                     </div>
                 </form>
@@ -387,7 +465,8 @@
                     <div class="mb-3">
                         <label class="form-label">Upload Media (Image/Video)</label>
                         <div class="upload-area" id="editMediaUpload">
-                            <input type="file" class="d-none" id="editMediaInput" name="media" accept="image/*, video/*">
+                            <input type="file" class="d-none" id="editMediaInput" name="media"
+                                   accept="image/*, video/*">
                             <div id="editMediaPreview"></div>
                         </div>
                     </div>
@@ -472,7 +551,7 @@
         $('#editModal').modal('show');
     }
 
-    $('#contentForm').on('submit', function(e) {
+    $('#contentForm').on('submit', function (e) {
         e.preventDefault();
         let formData = new FormData(this);
 
@@ -482,13 +561,13 @@
             data: formData,
             contentType: false,
             processData: false,
-            success: function(response) {
+            success: function (response) {
                 $('#formModal').modal('hide');
                 Swal.fire('Succès!', response.message, 'success').then(() => {
                     location.reload(); // Reload the page to reflect the new post
                 });
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 let errorText = 'Il y a eu un problème lors de la création de la publication.';
                 if (xhr.status === 422) {
                     const errors = xhr.responseJSON.errors;
@@ -517,7 +596,9 @@
             },
             success: function (response) {
                 $('#editModal').modal('hide');
-                Swal.fire('Succès!', response.message, 'success').then(() => { location.reload(); });
+                Swal.fire('Succès!', response.message, 'success').then(() => {
+                    location.reload();
+                });
             },
             error: function (xhr) {
                 let errorText = 'Il y a eu un problème lors de la mise à jour de la publication.';
@@ -550,7 +631,9 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
-                        Swal.fire('Supprimé!', response.message, 'success').then(() => { location.reload(); });
+                        Swal.fire('Supprimé!', response.message, 'success').then(() => {
+                            location.reload();
+                        });
                     },
                     error: function () {
                         Swal.fire('Erreur!', 'Il y a eu un problème lors de la suppression de la publication.', 'error');
@@ -574,7 +657,7 @@
                         comment: comment,
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         // Append new comment to the comment section
                         let newCommentHtml = `
                         <div class="d-flex mb-3 comment-item" data-comment-id="${response.comment_id}">
@@ -592,7 +675,7 @@
                         $(event.target).closest('.comment-section').find('.d-flex.align-items-center').before(newCommentHtml);
                         event.target.value = ""; // Clear input field after adding the comment
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         Swal.fire('Erreur!', 'Impossible d\'ajouter le commentaire.', 'error');
                     }
                 });
@@ -612,7 +695,7 @@
                     comment: newCommentContent,
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function(response) {
+                success: function (response) {
                     // Update the comment display after successful update
                     const commentText = $(`#commentText-${commentId}`);
                     const commentContent = $(`#commentContent-${commentId}`);
@@ -623,7 +706,7 @@
 
                     Swal.fire('Succès!', 'Commentaire mis à jour avec succès.', 'success');
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     let errorText = 'Il y a eu un problème lors de la mise à jour du commentaire.';
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON.errors;
@@ -654,11 +737,11 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         $(`[data-comment-id="${commentId}"]`).remove(); // Remove comment from DOM
                         Swal.fire('Supprimé!', response.message, 'success');
                     },
-                    error: function() {
+                    error: function () {
                         Swal.fire('Erreur!', 'Impossible de supprimer le commentaire.', 'error');
                     }
                 });
@@ -688,14 +771,16 @@
             });
 
             // Alternatively save the comment when the user clicks outside (blur event)
-            commentContent.on('blur', function() {
+            commentContent.on('blur', function () {
                 updateComment(commentId);
             });
         } else {
             commentText.show();
             commentContent.addClass('d-none');
         }
-    }    function toggleComments(postId) {
+    }
+
+    function toggleComments(postId) {
 
 
         // Find the button clicked and the corresponding comments for the post
@@ -720,7 +805,7 @@
 </script>
 {{--like part--}}
 <script>
-    $(document).on('click', '.interaction-button.like-button', function() {
+    $(document).on('click', '.interaction-button.like-button', function () {
         let postId = $(this).data('post-id');
         let button = $(this);
 
@@ -732,12 +817,12 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function(response) {
+                success: function (response) {
                     button.removeClass('liked');
                     button.html(`<i class="fas fa-heart me-2"></i>Like`);
                     $(`#likeCount-${postId}`).text(response.like_count + " J'aime");
                 },
-                error: function() {
+                error: function () {
                     Swal.fire('Erreur!', 'Impossible d\'annuler le like.', 'error');
                 }
             });
@@ -749,12 +834,12 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function(response) {
+                success: function (response) {
                     button.addClass('liked');
                     button.html(`<i class="fas fa-heart text-danger me-2"></i>Unlike`);
                     $(`#likeCount-${postId}`).text(response.like_count + " J'aime");
                 },
-                error: function() {
+                error: function () {
                     Swal.fire('Erreur!', 'Impossible d\'aimer la publication.', 'error');
                 }
             });
@@ -769,7 +854,7 @@
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            success: function(response) {
+            success: function (response) {
                 let likesList = $('#viewAllLikesList');
                 let commentsList = $('#viewAllCommentsList');
 
@@ -779,7 +864,7 @@
 
                 // Populate likes
                 if (response.likes.length > 0) {
-                    response.likes.forEach(function(like) {
+                    response.likes.forEach(function (like) {
                         likesList.append(`
                         <li class="list-group-item d-flex align-items-center">
                             <img src="${like.user_avatar}" alt="${like.user_name}" class="user-avatar me-2" style="width: 32px; height: 32px;">
@@ -793,7 +878,7 @@
 
                 // Populate comments
                 if (response.comments.length > 0) {
-                    response.comments.forEach(function(comment) {
+                    response.comments.forEach(function (comment) {
                         commentsList.append(`
                         <li class="list-group-item d-flex align-items-start">
                             <img src="${comment.user_avatar}" alt="${comment.user_name}" class="user-avatar me-2" style="width: 32px; height: 32px;">
@@ -811,7 +896,7 @@
                 // Show the modal
                 $('#viewAllModal').modal('show');
             },
-            error: function() {
+            error: function () {
                 Swal.fire('Erreur!', 'Impossible de récupérer les informations.', 'error');
             }
         });
