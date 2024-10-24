@@ -246,7 +246,7 @@
                     <a href="{{ route('wastes.index') }}" class="nav-link text-dark">Déchets</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('posts.index') }}" target="_blank" class="nav-link text-dark">Articles</a>
+                    <a href="{{ route('posts.index') }}" class="nav-link text-dark">Articles</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ asset('#download') }}" class="nav-link text-dark smoothscroll">Contactez Nous</a>
