@@ -22,6 +22,7 @@ class CommentController extends Controller
         ]);
 
         return response()->json([
+            'comment_id' => $comment->id,
             'user' => auth()->user()->name,
             'comment' => $comment->comment,
             'created_at' => $comment->created_at->diffForHumans()
