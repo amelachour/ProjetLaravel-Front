@@ -222,7 +222,7 @@
     <div class="container-fluid">
         <!-- Logo -->
         <a class="navbar-brand" href="#">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" style="height: 80px;">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" style="height: 128px;">
         </a>
 
         <!-- Navbar Toggle for Mobile View -->
@@ -288,11 +288,31 @@
                     <label for="filterLocation" class="form-label">Lieu</label>
                     <select class="form-control select2" id="filterLocation" name="location">
                         <option value="">Sélectionnez un lieu</option>
-                        <option value="Tunis">Tunis</option>
-                        <option value="Sfax">Sfax</option>
-                        <option value="Sousse">Sousse</option>
+                        <option value="Ariana">Ariana</option>
+                        <option value="Béja">Béja</option>
+                        <option value="Ben Arous">Ben Arous</option>
                         <option value="Bizerte">Bizerte</option>
+                        <option value="Gabès">Gabès</option>
+                        <option value="Gafsa">Gafsa</option>
+                        <option value="Jendouba">Jendouba</option>
+                        <option value="Kairouan">Kairouan</option>
+                        <option value="Kasserine">Kasserine</option>
+                        <option value="Kébili">Kébili</option>
+                        <option value="Le Kef">Le Kef</option>
+                        <option value="Mahdia">Mahdia</option>
+                        <option value="Manouba">Manouba</option>
+                        <option value="Médenine">Médenine</option>
+                        <option value="Monastir">Monastir</option>
                         <option value="Nabeul">Nabeul</option>
+                        <option value="Sfax">Sfax</option>
+                        <option value="Sidi Bouzid">Sidi Bouzid</option>
+                        <option value="Siliana">Siliana</option>
+                        <option value="Sousse">Sousse</option>
+                        <option value="Tataouine">Tataouine</option>
+                        <option value="Tozeur">Tozeur</option>
+                        <option value="Tunis">Tunis</option>
+                        <option value="Zaghouan">Zaghouan</option>
+
                         <!-- Add more cities as needed -->
                     </select>
                 </div>
@@ -335,10 +355,14 @@
     @foreach($posts as $post)
         <div class="post-card bg-white">
             <!-- Post Actions (Edit/Delete) -->
-            <div class="post-actions">
-                <i class="fas fa-edit" onclick="openEditModal({{ json_encode($post) }})"></i>
-                <i class="fas fa-trash-alt" onclick="confirmDelete({{ $post->id }})"></i>
-            </div>
+            <!-- Post Actions (Edit/Delete) -->
+            @if(auth()->id() == $post->user_id)
+                <div class="post-actions">
+                    <i class="fas fa-edit" onclick="openEditModal({{ json_encode($post) }})"></i>
+                    <i class="fas fa-trash-alt" onclick="confirmDelete({{ $post->id }})"></i>
+                </div>
+            @endif
+
 
             <!-- Post Header -->
             <div class="p-3 border-bottom">
@@ -420,12 +444,14 @@
                             <p class="mb-0 comment-text" id="commentText-{{ $comment->id }}">{{ $comment->comment }}</p>
                             <textarea class="form-control d-none"
                                       id="commentContent-{{ $comment->id }}">{{ $comment->comment }}</textarea>
-                            <div class="comment-actions mt-1">
-                                <i class="fas fa-edit text-primary edit-comment"
-                                   onclick="enableCommentEdit({{ $comment->id }})" style="cursor: pointer;"></i>
-                                <i class="fas fa-trash-alt text-danger ms-2 delete-comment"
-                                   onclick="deleteComment({{ $comment->id }})" style="cursor: pointer;"></i>
-                            </div>
+                            <!-- Comment Actions (Edit/Delete) -->
+                            @if(auth()->id() == $comment->user_id)
+                                <div class="comment-actions mt-1">
+                                    <i class="fas fa-edit text-primary edit-comment" onclick="enableCommentEdit({{ $comment->id }})" style="cursor: pointer;"></i>
+                                    <i class="fas fa-trash-alt text-danger ms-2 delete-comment" onclick="deleteComment({{ $comment->id }})" style="cursor: pointer;"></i>
+                                </div>
+                            @endif
+
                         </div>
                     </div>
 
@@ -483,12 +509,31 @@
                         <label for="location" class="form-label">Lieu</label>
                         <select class="form-control select2" id="location" name="location">
                             <option value="">Sélectionnez un lieu</option>
-                            <option value="Tunis">Tunis</option>
-                            <option value="Sfax">Sfax</option>
-                            <option value="Sousse">Sousse</option>
+                            <option value="Ariana">Ariana</option>
+                            <option value="Béja">Béja</option>
+                            <option value="Ben Arous">Ben Arous</option>
                             <option value="Bizerte">Bizerte</option>
+                            <option value="Gabès">Gabès</option>
+                            <option value="Gafsa">Gafsa</option>
+                            <option value="Jendouba">Jendouba</option>
+                            <option value="Kairouan">Kairouan</option>
+                            <option value="Kasserine">Kasserine</option>
+                            <option value="Kébili">Kébili</option>
+                            <option value="Le Kef">Le Kef</option>
+                            <option value="Mahdia">Mahdia</option>
+                            <option value="Manouba">Manouba</option>
+                            <option value="Médenine">Médenine</option>
+                            <option value="Monastir">Monastir</option>
                             <option value="Nabeul">Nabeul</option>
-                            <!-- Add more cities as needed -->
+                            <option value="Sfax">Sfax</option>
+                            <option value="Sidi Bouzid">Sidi Bouzid</option>
+                            <option value="Siliana">Siliana</option>
+                            <option value="Sousse">Sousse</option>
+                            <option value="Tataouine">Tataouine</option>
+                            <option value="Tozeur">Tozeur</option>
+                            <option value="Tunis">Tunis</option>
+                            <option value="Zaghouan">Zaghouan</option>
+
                         </select>
                     </div>
 
@@ -537,12 +582,31 @@
                         <label for="editLocation" class="form-label">Lieu</label>
                         <select class="form-control select2" id="editLocation" name="location">
                             <option value="">Sélectionnez un lieu</option>
-                            <option value="Tunis">Tunis</option>
-                            <option value="Sfax">Sfax</option>
-                            <option value="Sousse">Sousse</option>
+                            <option value="Ariana">Ariana</option>
+                            <option value="Béja">Béja</option>
+                            <option value="Ben Arous">Ben Arous</option>
                             <option value="Bizerte">Bizerte</option>
+                            <option value="Gabès">Gabès</option>
+                            <option value="Gafsa">Gafsa</option>
+                            <option value="Jendouba">Jendouba</option>
+                            <option value="Kairouan">Kairouan</option>
+                            <option value="Kasserine">Kasserine</option>
+                            <option value="Kébili">Kébili</option>
+                            <option value="Le Kef">Le Kef</option>
+                            <option value="Mahdia">Mahdia</option>
+                            <option value="Manouba">Manouba</option>
+                            <option value="Médenine">Médenine</option>
+                            <option value="Monastir">Monastir</option>
                             <option value="Nabeul">Nabeul</option>
-                            <!-- Add more cities as needed -->
+                            <option value="Sfax">Sfax</option>
+                            <option value="Sidi Bouzid">Sidi Bouzid</option>
+                            <option value="Siliana">Siliana</option>
+                            <option value="Sousse">Sousse</option>
+                            <option value="Tataouine">Tataouine</option>
+                            <option value="Tozeur">Tozeur</option>
+                            <option value="Tunis">Tunis</option>
+                            <option value="Zaghouan">Zaghouan</option>
+
                         </select>
                     </div>
 
