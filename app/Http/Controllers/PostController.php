@@ -23,13 +23,12 @@ class PostController extends Controller
         try {
             // Validate the request data
             $validatedData = $request->validate([
-                'title' => 'required|string|max:255',
-                'body' => 'required|string', // Matches 'body' input from the form
+                'title' => 'required|string|max:255',// Matches 'body' input from the form
                 'location' => 'nullable|string|max:255',
-                'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi|max:10240', // Add validation for media
+                'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi|max:10240',
             ]);
 
-            // Create a new post
+
             $post = Post::create([
                 'user_id' => auth()->id(),
                 'title' => $validatedData['title'],
@@ -37,16 +36,16 @@ class PostController extends Controller
                 'location' => $validatedData['location'],
             ]);
 
-            // Handle the media file, if it exists
+
             if ($request->hasFile('media') && $request->file('media')->isValid()) {
                 $file = $request->file('media');
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $filePath = $file->move(public_path('posts'), $fileName);
 
-                // Determine if the uploaded file is an image
+
                 $isImage = in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif']);
 
-                // Save media details
+
                 Media::create([
                     'post_id' => $post->id,
                     'path' => 'posts/' . $fileName,
@@ -54,7 +53,7 @@ class PostController extends Controller
                 ]);
             }
 
-            // Return success response
+
             return response()->json([
                 'message' => 'Post created successfully',
                 'post_id' => $post->id
@@ -68,7 +67,7 @@ class PostController extends Controller
                 'user_id' => auth()->id(),
             ]);
 
-            // Return error response
+
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -85,14 +84,14 @@ class PostController extends Controller
 
             $post = Post::findOrFail($id);
 
-            // Update Post details
+
             $post->update([
                 'title' => $validatedData['title'],
                 'body' => $validatedData['body'],
                 'location' => $validatedData['location'],
             ]);
 
-            // Handle Media
+
             if ($request->hasFile('media') && $request->file('media')->isValid()) {
                 $file = $request->file('media');
                 $fileName = time() . '_' . $file->getClientOriginalName();
@@ -100,7 +99,7 @@ class PostController extends Controller
                 $isImage = in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif']);
 
                 if ($post->media) {
-                    // Delete old media if exists
+
                     if (file_exists(public_path($post->media->path))) {
                         unlink(public_path($post->media->path));
                     }
