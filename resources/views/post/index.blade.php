@@ -7,6 +7,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
@@ -285,8 +286,18 @@
                 </div>
                 <div class="col-md-4">
                     <label for="filterLocation" class="form-label">Lieu</label>
-                    <input type="text" class="form-control" id="filterLocation" name="location">
+                    <select class="form-control select2" id="filterLocation" name="location">
+                        <option value="">Sélectionnez un lieu</option>
+                        <option value="Tunis">Tunis</option>
+                        <option value="Sfax">Sfax</option>
+                        <option value="Sousse">Sousse</option>
+                        <option value="Bizerte">Bizerte</option>
+                        <option value="Nabeul">Nabeul</option>
+                        <!-- Add more cities as needed -->
+                    </select>
                 </div>
+
+
                 <div class="col-md-4">
                     <label for="filterDateFrom" class="form-label">Date de Début</label>
                     <input type="date" class="form-control" id="filterDateFrom" name="date_from">
@@ -301,8 +312,17 @@
                 </div>
             </div>
             <div class="text-end mt-3">
-                <button type="button" class="btn btn-dark" onclick="applyFilters()">Appliquer les Filtres</button>
+                <button type="button" class="btn btn-new-post" onclick="applyFilters()">
+                    <i class="fas fa-filter"></i> Appliquer les Filtres
+                </button>
+                <button type="button" class="btn btn-new-post ms-2" onclick="clearFilters()">
+                    <i class="fas fa-times-circle"></i> Effacer les Filtres
+                </button>
             </div>
+
+
+
+
         </form>
     </div>
     <div class="button-center-wrapper">
@@ -461,8 +481,18 @@
 
                     <div class="mb-3">
                         <label for="location" class="form-label">Lieu</label>
-                        <input type="text" class="form-control" id="location" name="location">
+                        <select class="form-control select2" id="location" name="location">
+                            <option value="">Sélectionnez un lieu</option>
+                            <option value="Tunis">Tunis</option>
+                            <option value="Sfax">Sfax</option>
+                            <option value="Sousse">Sousse</option>
+                            <option value="Bizerte">Bizerte</option>
+                            <option value="Nabeul">Nabeul</option>
+                            <!-- Add more cities as needed -->
+                        </select>
                     </div>
+
+
 
                     <div class="mb-3">
                         <label class="form-label">Upload Media (Image/Video)</label>
@@ -505,14 +535,23 @@
                     </div>
                     <div class="mb-3">
                         <label for="editLocation" class="form-label">Lieu</label>
-                        <input type="text" class="form-control" id="editLocation" name="location">
+                        <select class="form-control select2" id="editLocation" name="location">
+                            <option value="">Sélectionnez un lieu</option>
+                            <option value="Tunis">Tunis</option>
+                            <option value="Sfax">Sfax</option>
+                            <option value="Sousse">Sousse</option>
+                            <option value="Bizerte">Bizerte</option>
+                            <option value="Nabeul">Nabeul</option>
+                            <!-- Add more cities as needed -->
+                        </select>
                     </div>
+
+
                     <!-- Media Input -->
                     <div class="mb-3">
                         <label class="form-label">Upload Media (Image/Video)</label>
                         <div class="upload-area" id="editMediaUpload">
-                            <input type="file" class="d-none" id="editMediaInput" name="media"
-                                   accept="image/*, video/*">
+                            <input type="file" class="form-control" id="editMediaInput" name="media" accept="image/*, video/*">
                             <div id="editMediaPreview"></div>
                         </div>
                     </div>
@@ -554,9 +593,56 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-    // Handle media upload area click for adding media
+
+    $(document).ready(function() {
+        // Initialize Select2 for the filter location
+        $('#filterLocation').select2({
+            placeholder: "Sélectionnez un lieu",
+            allowClear: true
+        });
+
+        // Reinitialize Select2 when modals are opened for create and edit
+        $('#formModal').on('shown.bs.modal', function () {
+            $('#location').select2({
+                placeholder: "Sélectionnez un lieu",
+                dropdownParent: $('#formModal'),
+                allowClear: true
+            });
+        });
+
+        $('#editModal').on('shown.bs.modal', function () {
+            $('#editLocation').select2({
+                placeholder: "Sélectionnez un lieu",
+                dropdownParent: $('#editModal'),
+                allowClear: true
+            });
+        });
+
+
+
+    });
+
+
+    $('#editMediaInput').on('change', function (e) {
+        const file = e.target.files[0];
+        const preview = $('#editMediaPreview');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                if (file.type.startsWith('image/')) {
+                    preview.html(`<img src="${e.target.result}" class="preview-media">`);
+                } else if (file.type.startsWith('video/')) {
+                    preview.html(`<video controls class="preview-media"><source src="${e.target.result}"></video>`);
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
     document.getElementById('mediaUpload').addEventListener('click', () => {
         document.getElementById('mediaInput').click();
     });
@@ -735,20 +821,21 @@
 
         if (newCommentContent !== "") {
             $.ajax({
-                url: `/comments/${commentId}`, // Use the correct URI pattern for comments update route
+                url: `/comments/${commentId}`, // Correct URL to ensure the dynamic comment ID is used
                 type: "PATCH",
                 data: {
                     comment: newCommentContent,
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function (response) {
-                    // Update the comment display after successful update
+                    // Update the UI without reloading the page
                     const commentText = $(`#commentText-${commentId}`);
                     const commentContent = $(`#commentContent-${commentId}`);
 
-                    commentText.text(response.comment);
-                    commentText.show();
-                    commentContent.addClass('d-none');
+                    // Update the comment display after a successful update
+                    commentText.text(newCommentContent); // Set the new content
+                    commentText.show(); // Show the updated comment text
+                    commentContent.addClass('d-none'); // Hide the textarea
 
                     Swal.fire('Succès!', 'Commentaire mis à jour avec succès.', 'success');
                 },
@@ -764,8 +851,14 @@
         } else {
             Swal.fire('Erreur!', 'Le contenu du commentaire ne peut pas être vide.', 'error');
         }
-    }    // Handle deleting comments
+    }
+    // Handle deleting comments
     function deleteComment(commentId) {
+        if (!commentId) {
+            Swal.fire('Erreur!', 'Commentaire introuvable. Impossible de le supprimer.', 'error');
+            return;
+        }
+
         Swal.fire({
             title: 'Êtes-vous sûr?',
             text: "Voulez-vous vraiment supprimer ce commentaire?",
@@ -784,7 +877,8 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
-                        $(`[data-comment-id="${commentId}"]`).remove(); // Remove comment from DOM
+                        // Remove the comment from the DOM after successful deletion
+                        $(`[data-comment-id="${commentId}"]`).remove();
                         Swal.fire('Supprimé!', response.message, 'success');
                     },
                     error: function () {
@@ -794,7 +888,6 @@
             }
         });
     }
-
     // Enable editing for a comment
 </script>
 
@@ -812,20 +905,19 @@
             commentContent.on('keypress', function (event) {
                 if (event.key === 'Enter') {
                     event.preventDefault(); // Prevent adding a new line
-                    updateComment(commentId);
+                    updateComment(commentId); // Ensure the commentId is properly passed
                 }
             });
 
-            // Alternatively save the comment when the user clicks outside (blur event)
+            // Save the comment when the user clicks outside (blur event)
             commentContent.on('blur', function () {
-                updateComment(commentId);
+                updateComment(commentId); // Ensure the commentId is properly passed
             });
         } else {
             commentText.show();
             commentContent.addClass('d-none');
         }
     }
-
     function toggleComments(postId) {
 
 
@@ -982,6 +1074,24 @@
             }
         });
     }
+
+    function clearFilters() {
+        // Clear all filter input values
+        $('#filterTitle').val('');
+        $('#filterAuthor').val('');
+        $('#filterLocation').val('').trigger('change'); // Clear select2 dropdown
+        $('#filterDateFrom').val('');
+        $('#filterDateTo').val('');
+        $('#filterLikes').val('');
+
+        // Reset post display to show all posts
+        $('.post-card').each(function () {
+            $(this).show();
+        });
+    }
+
+
+
 </script>
 </body>
 </html>
